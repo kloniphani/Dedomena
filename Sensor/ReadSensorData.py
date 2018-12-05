@@ -3,17 +3,17 @@ sense = SenseHat()
 
 # Define the colours in a dictionary
 COLOR = {
-    'red' : (255, 0, 0)
-    'green': (0, 255, 0)
-    'blue' : (0, 0, 255)
-    'black': (0, 0, 0)
-    'white' : (255, 255, 255)
-    'orange': (255, 165, 0)
-    'yellow' : (255, 225, 0)
-    'cyan': (0, 255, 255)
-    'violet': (238, 130, 238)
-    'brown' : (165, 42, 42)
-    'purple': (128, 0, 128)
+    'red' : (255, 0, 0),
+    'green': (0, 255, 0),
+    'blue' : (0, 0, 255),
+    'black': (0, 0, 0),
+    'white' : (255, 255, 255),
+    'orange': (255, 165, 0),
+    'yellow' : (255, 225, 0),
+    'cyan': (0, 255, 255),
+    'violet': (238, 130, 238),
+    'brown' : (165, 42, 42),
+    'purple': (128, 0, 128),
 }
 
 def getReadings():
