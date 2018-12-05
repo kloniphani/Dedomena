@@ -18,9 +18,7 @@ COLOR = {
 
 def getReadings():
     #Take readings from all three sensors and ound the values to one decimal place, Then return the reading
-    return round(sense.get_temperature(), 1),
-        round(sense.get_pressure(), 1),
-        round(sense.get_humidity(), 1);
+    return round(sense.get_temperature(), 1), round(sense.get_pressure(), 1), round(sense.get_humidity(), 1);
 
 while True:
   # Calling a function to take all the readings
