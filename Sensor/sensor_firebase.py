@@ -8,10 +8,10 @@ import sys
 
 
 config = {
-	"apiKey": "AIzaSyCohsgXa-m4KvMQPQMFnJr9mClQKlTA3BQ",
-    	"authDomain": "raspberrypi-e763b.firebaseapp.com",
-    	"databaseURL": "https://raspberrypi-e763b.firebaseio.com",
-    	"storageBucket": "raspberrypi-e763b.appspot.com"
+	"apiKey": "AIzaSyCYu7gE_4HGDIy7pOOiw0AY-rrUmoE7eXQ",
+    	"authDomain": "sensehat-51bd7.firebaseapp.com",
+    	"databaseURL": "https://sensehat-51bd7.firebaseio.com",
+    	"storageBucket": "sensehat-51bd7.appspot.com"
 }
 
 firebase = pyrebase.initialize_app(config)
