@@ -41,6 +41,7 @@ Firebase = pyrebase.initialize_app(Config)
 db = Firebase.database()
 
 pnconf = PNConfiguration(); sleep(2)
+channel='senseHat'                         # provide pubnub channel_name
 
 pnconf.publish_key = 'pub-c-23235607-897e-4e8c-8b96-409d2a0ce710'       # set pubnub publish_key
 pnconf.subscribe_key = 'sub-c-7b8840c4-f940-11e8-ba8a-aef4d14eb57e'     # set pubnub subscibe_key
