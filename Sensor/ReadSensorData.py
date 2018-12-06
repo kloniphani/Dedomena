@@ -94,12 +94,11 @@ def deviceState():
 
         if x > 1 or y > 1 or z > 1:
             sense.show_letter("!", COLOR['red'])
-        else:
-            sense.clear()
+
 
 def joysticMovements():
-    MessageSpeed = 0.07; ValueSpeed = 0.3
-    TextColour = COLOR['white'];
+    MessageSpeed = 0.05; ValueSpeed = 0.1
+    TextColour = COLOR['orange'];
     while True:
         for event in sense.stick.get_events():
             # Check if the joystick was pressed
