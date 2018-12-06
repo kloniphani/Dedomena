@@ -76,7 +76,7 @@ def pushEnvironmentalReadings(interval = 10, print_results = True):
 
             time_sense = time.strftime('%H:%M:%S')
             date_sense = time.strftime('%d/%m/%Y')
-            data = {"MAC": MacAddress, "Date": date_sense, "Time": time_sense, "Temperature": Temperature, "Humidity": Pressure, "Pressure": Humidity}
+            data = {"MAC": MacAddress, "Date": date_sense, "Time": time_sense, "Temperature": Temperature, "Humidity": Humidity, "Pressure": Pressure}
             pubnub.publish().channel(channel).message({"eon": data}).pn_async(my_publish_callback)
             db.child("/Environment").push(data)
 
