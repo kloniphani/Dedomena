@@ -11,4 +11,4 @@ Firebase = pyrebase.initialize_app(Config)
 db = Firebase.database()
 
 Environment_Data = db.child('/Environmet').get()
-print(Environment_Data):
+print(Environment_Data)
