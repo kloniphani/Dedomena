@@ -9,16 +9,10 @@ import pubnub
 
 import datetime
 from time import sleep
-from Phidgets.Devices.InterfaceKit import InterfaceKit
-
 from sense_hat import SenseHat
 
 
 sense = SenseHat()
-
-interfaceKit = InterfaceKit()
-interfaceKit.openPhidget(327060)
-
 pnconf = PNConfiguration()  
 sleep(2)
 
@@ -30,28 +24,11 @@ pubnub = PubNub(pnconf)                     # create pubnub_object using pubnub_
 
 def my_publish_callback(envelope, status):
 	if not status.is_error():
-    	pass
+    		pass
 	else:
 		pass
 
 channel='senseHat'                         # provide pubnub channel_name
-
-
-data = {                                    # sample data to be published
-    'Temperature': '16',
-    'Humidity' : '88'
-}
-
-class MyListener(SubscribeCallback):        # Not need for working of this program
-	def status(self, pubnub, status):
-		if status.category == PNStatusCategory.PNConnectedCategory:
-			pubnub.publish().channel(channel).message({'fieldA': 'awesome', 'fieldB': 10}).sync()
- 
-	def message(self, pubnub, message):
-		print(message)
- 
-	def presence(self, pubnub, presence):
-		pass
 
 my_listener = SubscribeListener()                   # create listner_object to read the msg from the Broker/Server
 pubnub.add_listener(my_listener)                    # add listner_object to pubnub_object to subscribe it
@@ -91,8 +68,4 @@ while(1):
 while True:                                                 # Infinite loop
 	result = my_listener.wait_for_message_on(channel)       # Read the new msg on the channel
 	print(result.message)                                   # print the new msg
-
-
-# Close the interfaces
-interfaceKit.closePhidget()
 
