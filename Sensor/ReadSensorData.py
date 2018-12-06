@@ -91,9 +91,9 @@ def deviceState():
         y = Acceleration['y']
         z = Acceleration['z']
 
-        x = int(x, 0)
-        y = int(y, 0)
-        z = int(z, 0)
+        x = round(x, 0)
+        y = round(y, 0)
+        z = round(z, 0)
 
         # Update the rotation of the display depending on which way up the Sense HAT is
         if x  == -1:
