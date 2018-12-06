@@ -27,40 +27,57 @@ COLOR = {
     'purple' : (128, 0, 128),
 }
 
-def pushEnvironmentalReadings(interval = 5, print_results = False):
+Config = {
+    "apiKey": "AIzaSyCYu7gE_4HGDIy7pOOiw0AY-rrUmoE7eXQ",
+    "authDomain": "sensehat-51bd7.firebaseapp.com",
+    "databaseURL": "https://sensehat-51bd7.firebaseio.com",
+    "storageBucket": "sensehat-51bd7.appspot.com"
+}
+
+Firebase = pyrebase.initialize_app(Config)
+db = firebase.database()
+
+
+def pushEnvironmentalReadings(interval = 10, print_results = False):
     #Take readings from all three sensors and ound the values to one decimal place
     while(True):
         try:
-            Localtime = time.asctime( time.localtime(time.time()))
             Temperature = sense.get_temperature()
             Pressure = sense.get_pressure()
             Humidity = sense.get_humidity()
 
+            time_sense = time.strftime('%H:%M:%S')
+        	date_sense = time.strftime('%d/%m/%Y')
+            data = {"Date": date_sense, "Time": time_sense, "Temperature": Temperature, "Humidity": Pressure, "Pressure": Humidity}
+        	db.child("/Environment").push(data)
+
             if print_results == True:
-                print("Time: {0}\tMacID: {1}".format(Localtime, MacID))
+                print("Time: {0}\tMacID: {1}".format(time_sense, MacID))
                 print("\tTemperature: {0}C\tPressure: {1}Mb\tHumidity: {2}%\n\n".format(Temperature, Pressure, Humidity))
         except Exception as e:
             raise
         sleep(interval)
 
-def pushMovementReadings(interval = 5, print_results = False):
+def pushMovementReadings(interval = 2, print_results = False):
     while(True):
         try:
-            Localtime = time.asctime( time.localtime(time.time()))
             Acceleration = sense.get_accelerometer_raw()
-            x = Acceleration['x']
-            y = Acceleration['y']
-            z = Acceleration['z']
-
             Orientation = sense.get_orientation()
-            pitch = o["pitch"]
-            roll = o["roll"]
-            yaw = o["yaw"]
-
             north = sense.get_compass()
 
+            time_sense = time.strftime('%H:%M:%S')
+        	date_sense = time.strftime('%d/%m/%Y')
+            data = {"Date": date_sense,"Time": time_sense, "Acceleration": Acceleration, "Orientation": Orientation, "Compass": north}
+        	db.child("/Movement").push(data)
+
             if print_results == True:
-                print("Time: {0}\tMacID: {1}".format(Localtime, MacID))
+                x = Acceleration['x']
+                y = Acceleration['y']
+                z = Acceleration['z']
+                pitch = o["pitch"]
+                roll = o["roll"]
+                yaw = o["yaw"]
+                print("Time: {0}\tMacID: {1}".format(time_sense, MacID))
                 print("\tX={0}, Y={1}, Z={2}".format(x, y, z))
                 print("\tPitch {0} Roll {1} Yaw {2}\n\n".format(pitch, roll, yaw))
         except Exception as e:
@@ -74,9 +91,9 @@ def deviceState():
         y = Acceleration['y']
         z = Acceleration['z']
 
-        x=round(x, 0)
-        y=round(y, 0)
-        z=round(z, 0)
+        x = int(x, 0)
+        y = int(y, 0)
+        z = int(z, 0)
 
         # Update the rotation of the display depending on which way up the Sense HAT is
         if x  == -1:
@@ -97,7 +114,7 @@ def deviceState():
 
 
 def joysticMovements():
-    MessageSpeed = 0.05; ValueSpeed = 0.1
+    MessageSpeed = 0.05; ValueSpeed = 0.07
     TextColour = COLOR['orange'];
     while True:
         for event in sense.stick.get_events():
@@ -122,7 +139,6 @@ def joysticMovements():
 
               # Wait a while and then clear the screen
               sleep(0.5)
-              sense.clear()
 
 a = Process(target=joysticMovements)
 a.start()
@@ -130,5 +146,13 @@ a.start()
 b = Process(target=deviceState)
 b.start()
 
+c = Process(target=pushEnvironmentalReadings)
+c.start()
+
+d = Process(target=pushMovementReadings)
+d.start()
+
 a.join()
 b.join()
+c.join()
+d.join()
