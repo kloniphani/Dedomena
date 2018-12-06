@@ -10,7 +10,7 @@ def get_mac():
   return mac
 
 sense = SenseHat()
-MacID = get_mac()
+MacAddress = get_mac()
 
 # Define the colours in a dictionary
 COLOR = {
@@ -48,11 +48,11 @@ def pushEnvironmentalReadings(interval = 10, print_results = False):
 
             time_sense = time.strftime('%H:%M:%S')
             date_sense = time.strftime('%d/%m/%Y')
-            data = {"Date": date_sense, "Time": time_sense, "Temperature": Temperature, "Humidity": Pressure, "Pressure": Humidity}
+            data = {"MAC": MacAddress, "Date": date_sense, "Time": time_sense, "Temperature": Temperature, "Humidity": Pressure, "Pressure": Humidity}
             db.child("/Environment").push(data)
 
             if print_results == True:
-                print("Time: {0}\tMacID: {1}".format(time_sense, MacID))
+                print("Time: {0}\tMacAddress: {1}".format(time_sense, MacAddress))
                 print("\tTemperature: {0}C\tPressure: {1}Mb\tHumidity: {2}%\n\n".format(Temperature, Pressure, Humidity))
         except Exception as e:
             raise
@@ -67,7 +67,7 @@ def pushMovementReadings(interval = 2, print_results = False):
 
             time_sense = time.strftime('%H:%M:%S')
             date_sense = time.strftime('%d/%m/%Y')
-            data = {"Date": date_sense,"Time": time_sense, "Acceleration": Acceleration, "Orientation": Orientation, "Compass": north}
+            data = {"MAC": MacAddress, "Date": date_sense, "Time": time_sense, "Acceleration": Acceleration, "Orientation": Orientation, "Compass": north}
             db.child("/Movement").push(data)
 
             if print_results == True:
@@ -77,7 +77,7 @@ def pushMovementReadings(interval = 2, print_results = False):
                 pitch = o["pitch"]
                 roll = o["roll"]
                 yaw = o["yaw"]
-                print("Time: {0}\tMacID: {1}".format(time_sense, MacID))
+                print("Time: {0}\tMacAddress: {1}".format(time_sense, MacAddress))
                 print("\tX={0}, Y={1}, Z={2}".format(x, y, z))
                 print("\tPitch {0} Roll {1} Yaw {2}\n\n".format(pitch, roll, yaw))
         except Exception as e:
@@ -95,22 +95,20 @@ def deviceState():
         y = round(y, 0)
         z = round(z, 0)
 
-        # Update the rotation of the display depending on which way up the Sense HAT is
-        if x  == -1:
-            sense.set_rotation(180)
-        elif y == 1:
-            sense.set_rotation(90)
-        elif y == -1:
-            sense.set_rotation(270)
-        else:
-            sense.set_rotation(0)
+        if abs(x) > 1 or abs(y) > 1 or abs(z) > 1:
+            # Update the rotation of the display depending on which way up the Sense HAT is
+            if x  == -1:
+                sense.set_rotation(180)
+            elif y == 1:
+                sense.set_rotation(90)
+            elif y == -1:
+                sense.set_rotation(270)
+            else:
+                sense.set_rotation(0)
 
-        x = abs(x)
-        y = abs(y)
-        z = abs(z)
-
-        if x > 1 or y > 1 or z > 1:
             sense.show_letter("!", COLOR['red'])
+        else:
+            sense.clear()
 
 
 def joysticMovements():
