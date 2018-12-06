@@ -62,11 +62,11 @@ pubnub.subscribe().channels(channel).execute()      # subscribe the channel (Run
 
 
 my_listener.wait_for_connect()                      # wait for the listner_obj to connect to the Broker.Channel
-print('connected')                                  # print confirmation msg
+print('Connected to PubNub')                                  # print confirmation msg
 
 
 
-def pushEnvironmentalReadings(interval = 30, print_results = True):
+def pushEnvironmentalReadings(interval = 10, print_results = True):
     #Take readings from all three sensors and ound the values to one decimal place
     while(True):
         try:
@@ -87,7 +87,7 @@ def pushEnvironmentalReadings(interval = 30, print_results = True):
             raise
         sleep(interval)
 
-def pushMovementReadings(interval = 5, print_results = True):
+def pushMovementReadings(interval = 1, print_results = True):
     while(True):
         try:
             Acceleration = sense.get_accelerometer_raw()
