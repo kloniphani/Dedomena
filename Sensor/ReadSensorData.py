@@ -54,8 +54,6 @@ def my_publish_callback(envelope, status):
 	else:
 		pass
 
-channel='senseHat'                         # provide pubnub channel_name
-
 my_listener = SubscribeListener()                   # create listner_object to read the msg from the Broker/Server
 pubnub.add_listener(my_listener)                    # add listner_object to pubnub_object to subscribe it
 pubnub.subscribe().channels(channel).execute()      # subscribe the channel (Runs in background)
@@ -87,7 +85,7 @@ def pushEnvironmentalReadings(interval = 10, print_results = True):
             raise
         sleep(interval)
 
-def pushMovementReadings(interval = 5, print_results = True):
+def pushMovementReadings(interval = 5 , print_results = True):
     while(True):
         try:
             Acceleration = sense.get_accelerometer_raw()
