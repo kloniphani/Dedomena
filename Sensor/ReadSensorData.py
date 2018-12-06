@@ -45,11 +45,11 @@ def pushEnvironmentalReadings(interval = 10, print_results = False):
             Temperature = sense.get_temperature()
             Pressure = sense.get_pressure()
             Humidity = sense.get_humidity()
-
+            
             time_sense = time.strftime('%H:%M:%S')
-        	date_sense = time.strftime('%d/%m/%Y')
+            date_sense = time.strftime('%d/%m/%Y')
             data = {"Date": date_sense, "Time": time_sense, "Temperature": Temperature, "Humidity": Pressure, "Pressure": Humidity}
-        	db.child("/Environment").push(data)
+            db.child("/Environment").push(data)
 
             if print_results == True:
                 print("Time: {0}\tMacID: {1}".format(time_sense, MacID))
@@ -66,9 +66,9 @@ def pushMovementReadings(interval = 2, print_results = False):
             north = sense.get_compass()
 
             time_sense = time.strftime('%H:%M:%S')
-        	date_sense = time.strftime('%d/%m/%Y')
+            date_sense = time.strftime('%d/%m/%Y')
             data = {"Date": date_sense,"Time": time_sense, "Acceleration": Acceleration, "Orientation": Orientation, "Compass": north}
-        	db.child("/Movement").push(data)
+            db.child("/Movement").push(data)
 
             if print_results == True:
                 x = Acceleration['x']
