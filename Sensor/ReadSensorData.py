@@ -38,7 +38,7 @@ def pushEnvironmentalReadings(interval = 5, print_results = False):
 
             if print_results == True:
                 print("Time: {0}\tMacID: {1}".format(Localtime, MacID))
-                print("\tTemperature: {0}°C\tPressure: {1}Mb\tHumidity: {2}%\n\n".format(Temperature, Pressure, Humidity))
+                print("\tTemperature: {0}C\tPressure: {1}Mb\tHumidity: {2}%\n\n".format(Temperature, Pressure, Humidity))
         except Exception as e:
             raise
         sleep(interval)
