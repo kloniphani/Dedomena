@@ -10,6 +10,6 @@ Config = {
 Firebase = pyrebase.initialize_app(Config)
 db = Firebase.database()
 
-Environment_Data = db.child('Environmet').get()
+Environment_Data = db.child('/Environmet').get()
 for Reading in Environment_Data.each():
     print(Reading.val())
