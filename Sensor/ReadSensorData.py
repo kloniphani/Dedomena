@@ -2,7 +2,7 @@ from sense_hat import SenseHat
 from time import sleep, time
 from multiprocessing import Process
 
-import uuid, os
+import uuid, os, pyrebase
 
 def get_mac():
   mac_num = hex(uuid.getnode()).replace('0x', '').upper()
@@ -45,7 +45,7 @@ def pushEnvironmentalReadings(interval = 10, print_results = False):
             Temperature = sense.get_temperature()
             Pressure = sense.get_pressure()
             Humidity = sense.get_humidity()
-            
+
             time_sense = time.strftime('%H:%M:%S')
             date_sense = time.strftime('%d/%m/%Y')
             data = {"Date": date_sense, "Time": time_sense, "Temperature": Temperature, "Humidity": Pressure, "Pressure": Humidity}
