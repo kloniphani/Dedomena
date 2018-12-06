@@ -98,7 +98,7 @@ def deviceState():
             sense.clear()
 
 def joysticMovements():
-    MessageSpeed = 0.1; ValueSpeed = 0.5
+    MessageSpeed = 0.07; ValueSpeed = 0.3
     TextColour = COLOR['white'];
     while True:
         for event in sense.stick.get_events():
@@ -117,13 +117,19 @@ def joysticMovements():
                   sense.show_message("{0}%".format(round(sense.get_humidity(), 1)), text_colour=TextColour, scroll_speed=ValueSpeed)
               elif event.direction == "right":
                   sense.show_message("Compass", text_colour=TextColour, scroll_speed=MessageSpeed)
-                  sense.show_message("{0}".format(sense.compass), text_colour=TextColour, scroll_speed=ValueSpeed)
+                  sense.show_message("{0} N".format(round(sense.compass, 1)), text_colour=TextColour, scroll_speed=ValueSpeed)
               elif event.direction == "middle":
                   sense.show_letter("!", text_colour=TextColour)
 
               # Wait a while and then clear the screen
               sleep(0.5)
               sense.clear()
-p = Process(target=joysticMovements)
-p.start()
-p.join()
+
+a = Process(target=joysticMovements)
+a.start()
+
+b = Process(target=deviceState)
+b.start()
+
+a.join()
+b.join()
