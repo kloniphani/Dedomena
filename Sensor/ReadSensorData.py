@@ -87,7 +87,7 @@ def pushEnvironmentalReadings(interval = 10, print_results = True):
             raise
         sleep(interval)
 
-def pushMovementReadings(interval = 1, print_results = True):
+def pushMovementReadings(interval = 5, print_results = True):
     while(True):
         try:
             Acceleration = sense.get_accelerometer_raw()
