@@ -1,12 +1,7 @@
 {
   "ExpandedNodes": [
     "",
-    "\\Sensor",
-    "\\Storage",
-    "\\WebInterface",
-    "\\WebInterface\\WebInterface",
-    "\\WebInterface\\WebInterface\\templates"
+    "\\Sensor"
   ],
-  "SelectedNode": "\\WebInterface\\WebInterface\\templates\\layout.html",
   "PreviewInSolutionExplorer": false
 }

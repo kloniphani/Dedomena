@@ -49,10 +49,10 @@ pnconf.subscribe_key = 'sub-c-7b8840c4-f940-11e8-ba8a-aef4d14eb57e'     # set pu
 pubnub = PubNub(pnconf)                     # create pubnub_object using pubnub_configuration_object
 
 def my_publish_callback(envelope, status):
-	if not status.is_error():
-    		pass
-	else:
-		pass
+    if not status.is_error():
+        pass
+    else:
+        pass
 
 my_listener = SubscribeListener()                   # create listner_object to read the msg from the Broker/Server
 pubnub.add_listener(my_listener)                    # add listner_object to pubnub_object to subscribe it
