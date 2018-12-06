@@ -49,8 +49,8 @@ def pushMovementReadings(interval = 5, print_results = False):
             Localtime = time.asctime( time.localtime(time.time()))
             Acceleration = sense.get_accelerometer_raw()
             x = Acceleration['x']
-        	y = Acceleration['y']
-        	z = Acceleration['z']
+            y = Acceleration['y']
+            z = Acceleration['z']
 
             Orientation = sense.get_orientation()
             pitch = o["pitch"]
@@ -70,23 +70,23 @@ def pushMovementReadings(interval = 5, print_results = False):
 def deviceState():
     while True:
         Acceleration = sense.get_accelerometer_raw()
-    	x = Acceleration['x']
-    	y = Acceleration['y']
-    	z = Acceleration['z']
+        x = Acceleration['x']
+        y = Acceleration['y']
+        z = Acceleration['z']
 
-    	x=round(x, 0)
-    	y=round(y, 0)
-    	z=round(z, 0)
+        x=round(x, 0)
+        y=round(y, 0)
+        z=round(z, 0)
 
         # Update the rotation of the display depending on which way up the Sense HAT is
-      	if x  == -1:
-      	  sense.set_rotation(180)
-      	elif y == 1:
-      	  sense.set_rotation(90)
-      	elif y == -1:
-      	  sense.set_rotation(270)
-      	else:
-      	  sense.set_rotation(0)
+        if x  == -1:
+            sense.set_rotation(180)
+        elif y == 1:
+            sense.set_rotation(90)
+        elif y == -1:
+            sense.set_rotation(270)
+        else:
+            sense.set_rotation(0)
 
         x = abs(x)
         y = abs(y)
