@@ -1,8 +1,11 @@
 from sense_hat import SenseHat
 from time import sleep, time
 from multiprocessing import Process
+from pubnub.pubnub import PubNub, SubscribeListener, SubscribeCallback, PNStatusCategory
+from pubnub.pnconfiguration import PNConfiguration
+from pubnub.exceptions import PubNubException
 
-import uuid, os, pyrebase, sys, time, datetime
+import uuid, os, pyrebase, pubnub, sys, time, datetime
 
 def get_mac():
   mac_num = hex(uuid.getnode()).replace('0x', '').upper()
@@ -37,6 +40,30 @@ Config = {
 Firebase = pyrebase.initialize_app(Config)
 db = Firebase.database()
 
+pnconf = PNConfiguration(); sleep(2)
+
+pnconf.publish_key = 'pub-c-23235607-897e-4e8c-8b96-409d2a0ce710'       # set pubnub publish_key
+pnconf.subscribe_key = 'sub-c-7b8840c4-f940-11e8-ba8a-aef4d14eb57e'     # set pubnub subscibe_key
+
+pubnub = PubNub(pnconf)                     # create pubnub_object using pubnub_configuration_object
+
+def my_publish_callback(envelope, status):
+	if not status.is_error():
+    		pass
+	else:
+		pass
+
+channel='senseHat'                         # provide pubnub channel_name
+
+my_listener = SubscribeListener()                   # create listner_object to read the msg from the Broker/Server
+pubnub.add_listener(my_listener)                    # add listner_object to pubnub_object to subscribe it
+pubnub.subscribe().channels(channel).execute()      # subscribe the channel (Runs in background)
+
+
+my_listener.wait_for_connect()                      # wait for the listner_obj to connect to the Broker.Channel
+print('connected')                                  # print confirmation msg
+
+
 
 def pushEnvironmentalReadings(interval = 30, print_results = True):
     #Take readings from all three sensors and ound the values to one decimal place
@@ -49,6 +76,7 @@ def pushEnvironmentalReadings(interval = 30, print_results = True):
             time_sense = time.strftime('%H:%M:%S')
             date_sense = time.strftime('%d/%m/%Y')
             data = {"MAC": MacAddress, "Date": date_sense, "Time": time_sense, "Temperature": Temperature, "Humidity": Pressure, "Pressure": Humidity}
+            pubnub.publish().channel(channel).message({"Environment": data}).pn_async(my_publish_callback)
             db.child("/Environment").push(data)
 
             if print_results == True:
@@ -68,6 +96,7 @@ def pushMovementReadings(interval = 5, print_results = True):
             time_sense = time.strftime('%H:%M:%S')
             date_sense = time.strftime('%d/%m/%Y')
             data = {"MAC": MacAddress, "Date": date_sense, "Time": time_sense, "Acceleration": Acceleration, "Orientation": Orientation, "Compass": north}
+            pubnub.publish().channel(channel).message({"Movement": data}).pn_async(my_publish_callback)
             db.child("/Movement").push(data)
 
             if print_results == True:
