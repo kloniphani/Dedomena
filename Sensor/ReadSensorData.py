@@ -35,7 +35,7 @@ Config = {
 }
 
 Firebase = pyrebase.initialize_app(Config)
-db = firebase.database()
+db = Firebase.database()
 
 
 def pushEnvironmentalReadings(interval = 10, print_results = False):
