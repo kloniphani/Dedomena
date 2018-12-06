@@ -11,6 +11,7 @@ from sense_hat import SenseHat
 
 sense = SenseHat()
 pnconf = PNConfiguration()  
+channel='senseHat'                         # provide pubnub channel_name
 sleep(2)
 
 pnconf.publish_key = 'pub-c-23235607-897e-4e8c-8b96-409d2a0ce710'       # set pubnub publish_key
@@ -23,8 +24,6 @@ def my_publish_callback(envelope, status):
     		pass
 	else:
 		pass
-
-channel='senseHat'                         # provide pubnub channel_name
 
 my_listener = SubscribeListener()                   # create listner_object to read the msg from the Broker/Server
 pubnub.add_listener(my_listener)                    # add listner_object to pubnub_object to subscribe it
