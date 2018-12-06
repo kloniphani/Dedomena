@@ -24,19 +24,7 @@ def my_publish_callback(envelope, status):
 	else:
 		pass
 
-channel='senseHat' # provide pubnub channel_name
-
-class MyListener(SubscribeCallback):        # Not need for working of this program
-    def status(self, pubnub, status):
-        if status.category == PNStatusCategory.PNConnectedCategory:
-            pubnub.publish().channel(channel).message({'fieldA': 'awesome', 'fieldB': 10}).sync()
- 
-    def message(self, pubnub, message):
-        print(message)
- 
-    def presence(self, pubnub, presence):
-        pass
-
+channel='senseHat'                         # provide pubnub channel_name
 
 my_listener = SubscribeListener()                   # create listner_object to read the msg from the Broker/Server
 pubnub.add_listener(my_listener)                    # add listner_object to pubnub_object to subscribe it
@@ -59,10 +47,8 @@ while(1):
             	'humidity': humidity,
             	'pressure': pressure
 		}}
-    	).async(my_publish_callback)
+    	).pn_async(my_publish_callback)
 	
-	print
-	print datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 	print("Ambient Temperature: " + str(temperature) + " degrees Celcius")
 	print("Relative Humidity: " + str(humidity) + "%")
 	print("Pressure: " + str(pressure) + " bars")
