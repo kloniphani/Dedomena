@@ -1,7 +1,9 @@
 from sense_hat import SenseHat
 from time import sleep, time
+from multiprocessing import Process
 
-import uuid
+import uuid, os
+
 def get_mac():
   mac_num = hex(uuid.getnode()).replace('0x', '').upper()
   mac = '-'.join(mac_num[i: i + 2] for i in range(0, 11, 2))
@@ -42,7 +44,7 @@ def pushEnvironmentalReadings(interval = 5, print_results = False):
         sleep(interval)
 
 def pushMovementReadings(interval = 5, print_results = False):
-    while(True)
+    while(True):
         try:
             Localtime = time.asctime( time.localtime(time.time()))
             Acceleration = sense.get_accelerometer_raw()
@@ -122,7 +124,6 @@ def joysticMovements():
               # Wait a while and then clear the screen
               sleep(0.5)
               sense.clear()
-
-
-while True:
-  # Calling a function to take all the readings
+p = Process(target=joysticMovements)
+p.start()
+p.join()
