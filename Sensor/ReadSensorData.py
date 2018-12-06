@@ -74,9 +74,9 @@ def pushMovementReadings(interval = 5, print_results = True):
                 x = Acceleration['x']
                 y = Acceleration['y']
                 z = Acceleration['z']
-                pitch = o["pitch"]
-                roll = o["roll"]
-                yaw = o["yaw"]
+                pitch = Orientation["pitch"]
+                roll = Orientation["roll"]
+                yaw = Orientation["yaw"]
                 print("Time: {0}\tMacAddress: {1}".format(time_sense, MacAddress))
                 print("\tX={0}, Y={1}, Z={2}".format(x, y, z))
                 print("\tPitch {0} Roll {1} Yaw {2}\n\n".format(pitch, roll, yaw))
@@ -112,7 +112,7 @@ def deviceState():
 
 
 def joysticMovements():
-    MessageSpeed = 0.05; ValueSpeed = 0.07
+    MessageSpeed = 0.05; ValueSpeed = 0.05
     TextColour = COLOR['orange'];
     while True:
         for event in sense.stick.get_events():
