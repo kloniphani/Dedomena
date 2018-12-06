@@ -38,7 +38,7 @@ Firebase = pyrebase.initialize_app(Config)
 db = Firebase.database()
 
 
-def pushEnvironmentalReadings(interval = 10, print_results = False):
+def pushEnvironmentalReadings(interval = 30, print_results = True):
     #Take readings from all three sensors and ound the values to one decimal place
     while(True):
         try:
@@ -58,7 +58,7 @@ def pushEnvironmentalReadings(interval = 10, print_results = False):
             raise
         sleep(interval)
 
-def pushMovementReadings(interval = 2, print_results = False):
+def pushMovementReadings(interval = 5, print_results = True):
     while(True):
         try:
             Acceleration = sense.get_accelerometer_raw()
