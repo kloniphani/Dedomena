@@ -77,7 +77,7 @@ def pushEnvironmentalReadings(interval = 30, print_results = True):
             time_sense = time.strftime('%H:%M:%S')
             date_sense = time.strftime('%d/%m/%Y')
             data = {"MAC": MacAddress, "Date": date_sense, "Time": time_sense, "Temperature": Temperature, "Humidity": Pressure, "Pressure": Humidity}
-            pubnub.publish().channel(channel).message({"Environment": data}).pn_async(my_publish_callback)
+            pubnub.publish().channel(channel).message({"eon": data}).pn_async(my_publish_callback)
             db.child("/Environment").push(data)
 
             if print_results == True:
@@ -97,7 +97,7 @@ def pushMovementReadings(interval = 5, print_results = True):
             time_sense = time.strftime('%H:%M:%S')
             date_sense = time.strftime('%d/%m/%Y')
             data = {"MAC": MacAddress, "Date": date_sense, "Time": time_sense, "Acceleration": Acceleration, "Orientation": Orientation, "Compass": north}
-            pubnub.publish().channel(channel).message({"Movement": data}).pn_async(my_publish_callback)
+            pubnub.publish().channel(channel).message({"eon": data}).pn_async(my_publish_callback)
             db.child("/Movement").push(data)
 
             if print_results == True:
