@@ -1,5 +1,14 @@
 from sense_hat import SenseHat
+from time import sleep, time
+
+import uuid
+def get_mac():
+  mac_num = hex(uuid.getnode()).replace('0x', '').upper()
+  mac = '-'.join(mac_num[i: i + 2] for i in range(0, 11, 2))
+  return mac
+
 sense = SenseHat()
+MacID = get_mac()
 
 # Define the colours in a dictionary
 COLOR = {
@@ -16,37 +25,52 @@ COLOR = {
     'purple' : (128, 0, 128),
 }
 
-def pushEnvironmentalReadings(interval = 5, print_results = False, decimal = 1):
+def pushEnvironmentalReadings(interval = 5, print_results = False):
     #Take readings from all three sensors and ound the values to one decimal place
-    Temperature
-    Pressure
-    Humidity
-    return round(sense.get_temperature(), 1), round(sense.get_pressure(), 1), round(sense.get_humidity(), 1);
+    while(True):
+        try:
+            Localtime = time.asctime( time.localtime(time.time()))
+            Temperature = sense.get_temperature()
+            Pressure = sense.get_pressure()
+            Humidity = sense.get_humidity()
 
-def pushMovementReadings(interval = 5, print_results = False, decimal = 1):
-    acceleration = sense.get_accelerometer_raw()
-    x = acceleration['x']
-	y = acceleration['y']
-	z = acceleration['z']
+            if print_results == True:
+                print("Time: {0}\tMacID: {1}".format(Localtime, MacID))
+                print("\tTemperature: {0}°C\tPressure: {1}Mb\tHumidity: {2}%\n\n".format(Temperature, Pressure, Humidity))
+        except Exception as e:
+            raise
+        sleep(interval)
 
+def pushMovementReadings(interval = 5, print_results = False):
+    while(True)
+        try:
+            Localtime = time.asctime( time.localtime(time.time()))
+            Acceleration = sense.get_accelerometer_raw()
+            x = Acceleration['x']
+        	y = Acceleration['y']
+        	z = Acceleration['z']
 
-    from sense_hat import SenseHat
-    sense = SenseHat()
-    sense.clear()
+            Orientation = sense.get_orientation()
+            pitch = o["pitch"]
+            roll = o["roll"]
+            yaw = o["yaw"]
 
-    o = sense.get_orientation()
-    pitch = o["pitch"]
-    roll = o["roll"]
-    yaw = o["yaw"]
-    print("pitch {0} roll {1} yaw {2}".format(pitch, roll, yaw))
-    return True
+            north = sense.get_compass()
+
+            if print_results == True:
+                print("Time: {0}\tMacID: {1}".format(Localtime, MacID))
+                print("\tX={0}, Y={1}, Z={2}".format(x, y, z))
+                print("\tPitch {0} Roll {1} Yaw {2}\n\n".format(pitch, roll, yaw))
+        except Exception as e:
+            raise
+        sleep(interval)
 
 def deviceState():
     while True:
-        acceleration = sense.get_accelerometer_raw()
-    	x = acceleration['x']
-    	y = acceleration['y']
-    	z = acceleration['z']
+        Acceleration = sense.get_accelerometer_raw()
+    	x = Acceleration['x']
+    	y = Acceleration['y']
+    	z = Acceleration['z']
 
     	x=round(x, 0)
     	y=round(y, 0)
@@ -72,33 +96,33 @@ def deviceState():
             sense.clear()
 
 def joysticMovements():
+    MessageSpeed = 0.1; ValueSpeed = 0.5
+    TextColour = COLOR['white'];
     while True:
-      for event in sense.stick.get_events():
-        # Check if the joystick was pressed
-        if event.action == "pressed":
+        for event in sense.stick.get_events():
+            # Check if the joystick was pressed
+            if event.action == "pressed":
 
-          # Check which direction
-          if event.direction == "up":
-            sense.show_letter("U")      # Up arrow
-          elif event.direction == "down":
-            sense.show_letter("D")      # Down arrow
-          elif event.direction == "left":
-            sense.show_letter("L")      # Left arrow
-          elif event.direction == "right":
-            sense.show_letter("R")      # Right arrow
-          elif event.direction == "middle":
-            sense.show_letter("M")      # Enter key
+              # Check which direction
+              if event.direction == "up":
+                  sense.show_message("Temperature", text_colour=TextColour, scroll_speed=MessageSpeed)
+                  sense.show_message("{0}C".format(round(sense.get_temperature(), 1)), text_colour=TextColour, scroll_speed=ValueSpeed)
+              elif event.direction == "down":
+                  sense.show_message("Pressure", text_colour=TextColour, scroll_speed=MessageSpeed)
+                  sense.show_message("{0}Mb".format(round(sense.get_pressure(), 1)), text_colour=TextColour, scroll_speed=ValueSpeed)
+              elif event.direction == "left":
+                  sense.show_message("Humidity", text_colour=TextColour, scroll_speed=MessageSpeed)
+                  sense.show_message("{0}%".format(round(sense.get_humidity(), 1)), text_colour=TextColour, scroll_speed=ValueSpeed)
+              elif event.direction == "right":
+                  sense.show_message("Compass", text_colour=TextColour, scroll_speed=MessageSpeed)
+                  sense.show_message("{0}".format(sense.compass), text_colour=TextColour, scroll_speed=ValueSpeed)
+              elif event.direction == "middle":
+                  sense.show_letter("!", text_colour=TextColour)
 
-          # Wait a while and then clear the screen
-          sleep(0.5)
-          sense.clear()
+              # Wait a while and then clear the screen
+              sleep(0.5)
+              sense.clear()
 
 
 while True:
   # Calling a function to take all the readings
-  Temperature, Pressure, Humidity = getReadings()
-
-  message = "Temperature: " + str(Temperature) + " Pressure: " + str(Pressure) + " Humidity: " + str(Humidity)
-
-  # Display the scrolling message
-  sense.show_message(message, scroll_speed=0.5)
