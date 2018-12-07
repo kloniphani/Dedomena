@@ -14,6 +14,9 @@ def get_mac():
 
 sense = SenseHat()
 MacAddress = get_mac()
+channel='senseHat'                         # provide pubnub channel_name
+
+
 
 # Define the colours in a dictionary
 COLOR = {
@@ -41,7 +44,7 @@ Firebase = pyrebase.initialize_app(Config)
 db = Firebase.database()
 
 pnconf = PNConfiguration(); sleep(2)
-channel='senseHat'                         # provide pubnub channel_name
+
 
 pnconf.publish_key = 'pub-c-23235607-897e-4e8c-8b96-409d2a0ce710'       # set pubnub publish_key
 pnconf.subscribe_key = 'sub-c-7b8840c4-f940-11e8-ba8a-aef4d14eb57e'     # set pubnub subscibe_key
@@ -49,10 +52,12 @@ pnconf.subscribe_key = 'sub-c-7b8840c4-f940-11e8-ba8a-aef4d14eb57e'     # set pu
 pubnub = PubNub(pnconf)                     # create pubnub_object using pubnub_configuration_object
 
 def my_publish_callback(envelope, status):
-    if not status.is_error():
-        pass
-    else:
-        pass
+	if not status.is_error():
+    		pass
+	else:
+		pass
+
+
 
 my_listener = SubscribeListener()                   # create listner_object to read the msg from the Broker/Server
 pubnub.add_listener(my_listener)                    # add listner_object to pubnub_object to subscribe it
@@ -75,9 +80,8 @@ def pushEnvironmentalReadings(interval = 10, print_results = True):
             time_sense = time.strftime('%H:%M:%S')
             date_sense = time.strftime('%d/%m/%Y')
             data = {"MAC": MacAddress, "Date": date_sense, "Time": time_sense, "Temperature": Temperature, "Humidity": Humidity, "Pressure": Pressure}
-            pubnub.publish().channel(channel).message({"eon": data}).pn_async(my_publish_callback)
-            db.child("/Environment").push(data)
 
+            db.child("/Environment").push(data)
             if print_results == True:
                 print("Time: {0}\tMacAddress: {1}".format(time_sense, MacAddress))
                 print("\tTemperature: {0}C\tPressure: {1}Mb\tHumidity: {2}%\n\n".format(Temperature, Pressure, Humidity))
@@ -85,7 +89,7 @@ def pushEnvironmentalReadings(interval = 10, print_results = True):
             raise
         sleep(interval)
 
-def pushMovementReadings(interval = 5 , print_results = True):
+def pushMovementReadings(interval = 1, print_results = True):
     while(True):
         try:
             Acceleration = sense.get_accelerometer_raw()
@@ -95,7 +99,6 @@ def pushMovementReadings(interval = 5 , print_results = True):
             time_sense = time.strftime('%H:%M:%S')
             date_sense = time.strftime('%d/%m/%Y')
             data = {"MAC": MacAddress, "Date": date_sense, "Time": time_sense, "Acceleration": Acceleration, "Orientation": Orientation, "Compass": north}
-            pubnub.publish().channel(channel).message({"eon": data}).pn_async(my_publish_callback)
             db.child("/Movement").push(data)
 
             if print_results == True:
@@ -111,6 +114,42 @@ def pushMovementReadings(interval = 5 , print_results = True):
         except Exception as e:
             raise
         sleep(interval)
+
+def publishToPubNub(interval=10):
+	while(True):
+		try:
+			time_sense = time.strftime('%H:%M:%S')
+			date_sense = time.strftime('%d/%m/%Y')
+			Temperature = sense.get_temperature()
+			Pressure = sense.get_pressure()
+			Humidity = sense.get_humidity()
+			Acceleration = sense.get_accelerometer_raw()
+			Orientation = sense.get_orientation()
+			north = sense.get_compass()
+			x = Acceleration['x']
+			y = Acceleration['y']
+			z = Acceleration['z']
+			pitch = Orientation["pitch"]
+			roll = Orientation["roll"]
+			yaw = Orientation["yaw"]
+
+			data = {"MAC": MacAddress,
+				"Date": date_sense,
+				"Time": time_sense,
+				"Temperature": Temperature,
+				"Humidity": Humidity,
+				"Pressure": Pressure,
+				"x":x,
+				"y":y,
+				"z":z,
+				"pitch":pitch,
+				"roll":roll,
+				"yaw":yaw
+				}
+			pubnub.publish().channel(channel).message({"eon": data}).pn_async(my_publish_callback)
+		except Exception as e:
+            		raise
+		sleep(interval)
 
 def deviceState():
     while True:
@@ -166,6 +205,7 @@ def joysticMovements():
               # Wait a while and then clear the screen
               sleep(0.5)
 
+
 a = Process(target=joysticMovements)
 a.start()
 
@@ -178,7 +218,11 @@ c.start()
 d = Process(target=pushMovementReadings)
 d.start()
 
+e= Process(target=publishToPubNub)
+e.start()
+
 a.join()
 b.join()
 c.join()
 d.join()
+e.join
