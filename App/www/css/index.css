@@ -31,34 +31,6 @@ body {
     font-size:12px;
 }
 
-.app {
-    background: url(../images/cordova.png) no-repeat center top; 
-    position: absolute;             
-    left: 50%;
-    top: 50%;
-    height: 50px;                  
-    width: 225px;                   
-    text-align: center;
-    padding: 180px 0px 0px 0px;     
-    margin: -115px 0px 0px -112px;
-}
-
-@media screen and (min-aspect-ratio: 1/1) and (min-width:400px) {
-    .app {
-        background-position:left center;
-        padding:75px 0px 75px 170px;
-        margin:-90px 0px 0px -198px;
-    }
-}
-
-h1 {
-    font-size:24px;
-    font-weight:normal;
-    margin:0px;
-    overflow:visible;
-    padding:0px;
-    text-align:center;
-}
 
 .event {
     border-radius:4px;
@@ -94,4 +66,9 @@ h1 {
 .blink {
     animation:fade 3000ms infinite;
     -webkit-animation:fade 3000ms infinite;
+}
+
+.main-wrapper {
+    height: 100vh;
+    padding: 0px;
 }
