@@ -28,8 +28,12 @@
 </head>
 
 <body>
-    <div class="container-fluid main-wrapper" id="mapContainer"></div>
-    <script>
+    <div class="container-fluid main-wrapper" id="mapContainer">
+        <button onclick="startTracking()">Start Tracking</button>
+        <button onclick="stopWorker()">Stop Worker</button>
+        <p id="geolocation">Finding geolocation...</p>
+    </div>
+    <script type="text/javascript">
         // Initialize the platform object:
         var platform = new H.service.Platform({
             'app_id': 'YVx7VH25wvkdlUFvGjC8',
@@ -55,27 +59,57 @@
         // Create the default UI components
         var ui = H.ui.UI.createDefault(map, defaultLayers);
 
-        function moveMapToBerlin(map) {
-            map.setCenter({ lat: 52.5159, lng: 13.3777 });
+        // Wait for PhoneGap to load
+        document.addEventListener("deviceready", onDeviceReady, false);
+
+        // PhoneGap is ready
+        function onDeviceReady() {
+            navigator.geolocation.getCurrentPosition(onSuccess, onError);
+        }
+
+        // onSuccess Geolocation
+        //
+        function onSuccess(position) {
+            var element = document.getElementById('geolocation');
+            element.innerHTML = 'Latitude: ' + position.coords.latitude + '<br />' +
+                'Longitude: ' + position.coords.longitude + '<br />' +
+                'Altitude: ' + position.coords.altitude + '<br />' +
+                'Accuracy: ' + position.coords.accuracy + '<br />' +
+                'Altitude Accuracy: ' + position.coords.altitudeAccuracy + '<br />' +
+                'Heading: ' + position.coords.heading + '<br />' +
+                'Speed: ' + position.coords.speed + '<br />' +
+                'Timestamp: ' + new Date(position.timestamp) + '<br />';
+
+            map.addObject(new H.map.Marker({
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            }));
+            map.setCenter({ lat: position.coords.latitude, lng: position.coords.longitude });
             map.setZoom(14);
         }
 
-        function enableTrafficInfo(map) {
-            // Show traffic tiles
-            map.setBaseLayer(defaultLayers.normal.traffic);
-
-            // Enable traffic incidents layer
-            map.addLayer(defaultLayers.incidents);
+        // onError Callback receives a [PositionError](PositionError/positionError.html) object
+        function onError(error) {
+            alert('code: ' + error.code + '\n' +
+                'message: ' + error.message + '\n');
         }
 
-        var berlinMarker = new H.map.Marker({
-            lat: 52.5192,
-            lng: 13.4061
-        });
-        map.addObject(berlinMarker);
-        moveMapToBerlin(map);
-        // Now enable traffic tiles and traffic incidents
-        enableTrafficInfo(map);
+        // onTracking update the device's current position when a change in position is detected
+        function onTracking(position) {
+            map.addObject(new H.map.Marker({
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            }));
+            map.setCenter({ lat: position.coords.latitude, lng: position.coords.longitude });
+            map.setZoom(14);
+        }
+
+        // Starting a thread to push the device informartion
+        function startTracking() {
+            var watchID = navigator.geolocation.watchPosition(onTracking, onError, { timeout: 3000000 });
+        }
+        
+
     </script>
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="scripts/platformOverrides.js"></script>
