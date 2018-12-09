@@ -31,14 +31,19 @@ body {
     font-size:12px;
 }
 
+.main-wrapper{
+    height: 100vh;
+    padding: 0px;
+}
+
 
 .event {
-    border-radius:4px;
-    -webkit-border-radius:4px;
-    color:#FFFFFF;
-    font-size:12px;
-    margin:0px 30px;
-    padding:2px 0px;
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    color: #FFFFFF;
+    font-size: 12px;
+    margin: 0px 30px;
+    padding: 2px 0px;
 }
 
 .event.listening {
@@ -66,9 +71,4 @@ body {
 .blink {
     animation:fade 3000ms infinite;
     -webkit-animation:fade 3000ms infinite;
-}
-
-.main-wrapper {
-    height: 100vh;
-    padding: 0px;
 }
