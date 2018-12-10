@@ -30,7 +30,7 @@
 <body>
     <div class="container-fluid main-wrapper" id="mapContainer">
         <button onclick="startTracking()">Start Tracking</button>
-        <button onclick="stopWorker()">Stop Worker</button>
+        <button onclick="stopTracking()">Stop Tracking</button>
         <p id="geolocation">Finding geolocation...</p>
     </div>
     <script type="text/javascript">
@@ -58,6 +58,14 @@
 
         // Create the default UI components
         var ui = H.ui.UI.createDefault(map, defaultLayers);
+
+        function enableTrafficInfo(map) {
+            // Show traffic tiles
+            map.setBaseLayer(defaultLayers.normal.traffic);
+
+            // Enable traffic incidents layer
+            map.addLayer(defaultLayers.incidents);
+        }
 
         // Wait for PhoneGap to load
         document.addEventListener("deviceready", onDeviceReady, false);
@@ -102,13 +110,38 @@
             }));
             map.setCenter({ lat: position.coords.latitude, lng: position.coords.longitude });
             map.setZoom(14);
+
+            // Connecting to the database and uploading un/structured data
+            var mysql = require('mysql');
+
+            var con = mysql.createConnection({
+                host: "localhost",
+                user: "root",
+                password: "passwd",
+                database: "dedomena"
+            });
+
+            con.connect(function (err) {
+                if (err) throw err;
+                console.log("Connected!");
+                var sql = "INSERT INTO customers (name, address) VALUES ('Company Inc', 'Highway 37')";
+                con.query(sql, function (err, result) {
+                    if (err) throw err;
+                    console.log("record inserted");
+                });
+            });
         }
 
         // Starting a thread to push the device informartion
-        function startTracking() {
-            var watchID = navigator.geolocation.watchPosition(onTracking, onError, { timeout: 3000000 });
+        var watchID;
+        function startTracking() {            
+            enableTrafficInfo(map); // Now enable traffic tiles and traffic incidents
+            watchID = navigator.geolocation.watchPosition(onTracking, onError, { enableHighAccuracy: true });
         }
-        
+
+        function stopTracking() {
+            navigator.geolocation.clearWatch(watchID);
+        }
 
     </script>
     <script type="text/javascript" src="cordova.js"></script>
