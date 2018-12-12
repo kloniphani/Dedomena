@@ -31,7 +31,7 @@
     <div class="container-fluid main-wrapper" id="mapContainer">
         <button onclick="startTracking()">Start Tracking</button>
         <button onclick="stopTracking()">Stop Tracking</button>
-        <p id="geolocation" >Finding geolocation...</p>
+        <p id="geolocation">Finding geolocation...</p>
     </div>
 
     <script type="text/javascript" src="cordova.js"></script>
@@ -98,14 +98,6 @@
             map.addLayer(defaultLayers.incidents);
         }
 
-        // Wait for PhoneGap to load
-        document.addEventListener("deviceready", onDeviceReady, false);
-
-        // PhoneGap is ready
-        function onDeviceReady() {
-            navigator.geolocation.getCurrentPosition(onSuccess, onError);
-        }
-
         // onSuccess Geolocation
         function onSuccess(position) {
             var element = document.getElementById('geolocation');
@@ -124,6 +116,11 @@
             }));
             map.setCenter({ lat: position.coords.latitude, lng: position.coords.longitude });
             map.setZoom(14);
+        }
+
+        // PhoneGap is ready
+        function onDeviceReady() {
+            navigator.geolocation.getCurrentPosition(onSuccess, onError);
         }
 
         // onError Callback receives a [PositionError](PositionError/positionError.html) object
