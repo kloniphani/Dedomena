@@ -33,11 +33,43 @@
         <button onclick="stopTracking()">Stop Tracking</button>
         <p id="geolocation">Finding geolocation...</p>
     </div>
+
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="scripts/platformOverrides.js"></script>
+    <script type="text/javascript" src="scripts/index.js"></script>
+
+    <!--Responsive scripts: JQuery, Popper, Bootstrap-->
+    <script type="text/javascript" src="../bower_components/jQuery/dist/jquery.js"></script>
+    <script type="text/javascript" src="../bower_components/popper.js/dist/popper.js"></script>
+    <script type="text/javascript" src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/5.7.0/firebase.js"></script>
     <script type="text/javascript">
+        // Wait for PhoneGap to load
+        document.addEventListener("deviceready", onDeviceReady, false);
+
+        // Set the configuration for your app
+        var configFirebase = {
+            apiKey: "AIzaSyAUuCiUIX4VLuRy3OziShe_HSfLwgL0rtU",
+            authDomain: "tracking-cd77d.firebaseapp.com",
+            databaseURL: "https://tracking-cd77d.firebaseio.com",
+            projectId: "tracking-cd77d",
+            storageBucket: "tracking-cd77d.appspot.com",
+            messagingSenderId: "1092137130719"
+        };
+
+        var configHere = {
+            appId: 'YVx7VH25wvkdlUFvGjC8',
+            appCode: '_DmLSgB2oR1uQ1LrG0GbVQ'
+        }
+
+        firebase.initializeApp(configFirebase);
+        var database = firebase.database(); // Get a reference to the database service
+
         // Initialize the platform object:
         var platform = new H.service.Platform({
-            'app_id': 'YVx7VH25wvkdlUFvGjC8',
-            'app_code': '_DmLSgB2oR1uQ1LrG0GbVQ'
+            'app_id': configHere.appId,
+            'app_code': configHere.appCode
         });
         var pixelRatio = window.devicePixelRatio || 1;
         var defaultLayers = platform.createDefaultLayers({
@@ -76,7 +108,6 @@
         }
 
         // onSuccess Geolocation
-        //
         function onSuccess(position) {
             var element = document.getElementById('geolocation');
             element.innerHTML = 'Latitude: ' + position.coords.latitude + '<br />' +
@@ -108,33 +139,93 @@
                 lat: position.coords.latitude,
                 lng: position.coords.longitude
             }));
+
             map.setCenter({ lat: position.coords.latitude, lng: position.coords.longitude });
             map.setZoom(14);
 
-            // Connecting to the database and uploading un/structured data
-            var mysql = require('mysql');
+            // Connecting to the database and uploading un/structured data           
+            var count = 0;
+            var geolocation = {
+                'lat': position.coords.latitude.toFixed(3),
+                'lng': position.coords.longitude.toFixed(3),
+                'altitude': position.coords.altitude,
+                'accuracy': position.coords.accuracy,
+                'altitudeAccuracy': position.coords.altitudeAccuracy,
+                'heading': position.coords.heading,
+                'speed': position.coords.speed,
+                'timestamp': position.timestamp
+            };
 
-            var con = mysql.createConnection({
-                host: "localhost",
-                user: "root",
-                password: "passwd",
-                database: "dedomena"
-            });
-
-            con.connect(function (err) {
-                if (err) throw err;
-                console.log("Connected!");
-                var sql = "INSERT INTO customers (name, address) VALUES ('Company Inc', 'Highway 37')";
-                con.query(sql, function (err, result) {
-                    if (err) throw err;
-                    console.log("record inserted");
-                });
+            $.ajax({
+                url: 'https://weather.cit.api.here.com/weather/1.0/report.json',
+                type: 'GET',
+                dataType: 'jsonp',
+                jsonp: 'jsonpcallback',
+                data: {
+                    product: 'observation',
+                    latitude: geolocation['lat'],
+                    longitude: geolocation['lng'],
+                    oneobservation: 'true',
+                    app_id: configHere.appId,
+                    app_code: configHere.appCode
+                },
+                success: function (data) {
+                    var weather = data;
+                    $.ajax({
+                        url: 'https://traffic.api.here.com/traffic/6.1/flow.json',
+                        type: 'GET',
+                        dataType: 'jsonp',
+                        jsonp: 'jsoncallback',
+                        data: {
+                            prox: String(geolocation['lat']) + ',' + String(geolocation['lng'] + ',15000'),
+                            responseattributes: 'sh,fc',
+                            app_id: configHere.appId,
+                            app_code: configHere.appCode
+                        },
+                        success: function (data) {
+                            var trafficFlow = data;
+                            $.ajax({
+                                url: 'https://traffic.api.here.com/traffic/6.0/incidents.json',
+                                type: 'GET',
+                                dataType: 'jsonp',
+                                jsonp: 'jsoncallback',
+                                data: {
+                                    prox: String(geolocation['lat']) + ',' + String(geolocation['lng'] + ',15000'),
+                                    criticality: '0,1,2,3',
+                                    app_id: configHere.appId,
+                                    app_code: configHere.appCode
+                                },
+                                success: function (data) {
+                                    var trafficIncidents = data;
+                                    $(function () {
+                                        message = {
+                                            'device': {
+                                                'model': device.model,
+                                                'platform': device.platform,
+                                                'uui': device.uuid,
+                                                'version': device.version,
+                                                'manufacturer': device.manufacturer,
+                                                'serial': device.serial
+                                            },
+                                            'timestamp': new Date().toUTCString(),
+                                            'geolocation': geolocation,
+                                            'trafficFlow': trafficFlow,
+                                            'trafficIncidents': trafficIncidents,
+                                            'weather': weather
+                                        }
+                                        database.ref('\Tracking' + String(position.timestamp)).set(message);
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
             });
         }
 
         // Starting a thread to push the device informartion
         var watchID;
-        function startTracking() {            
+        function startTracking() {
             enableTrafficInfo(map); // Now enable traffic tiles and traffic incidents
             watchID = navigator.geolocation.watchPosition(onTracking, onError, { enableHighAccuracy: true });
         }
@@ -144,13 +235,5 @@
         }
 
     </script>
-    <script type="text/javascript" src="cordova.js"></script>
-    <script type="text/javascript" src="scripts/platformOverrides.js"></script>
-    <script type="text/javascript" src="scripts/index.js"></script>
-
-    <!--Responsive scripts: JQuery, Popper, Bootstrap-->
-    <script type="text/javascript" src="../bower_components/jQuery/dist/jquery.slim.js"></script>
-    <script type="text/javascript" src="../bower_components/popper.js/dist/popper.min.js"></script>
-    <script type="text/javascript" src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 </body>
 </html>

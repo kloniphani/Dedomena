@@ -2,7 +2,5 @@
   "name": "App",
   "version": "1.0.0",
   "private": true,
-  "dependencies": {
-    "mysql": "2.16.0"
-  }
+  "dependencies": {}
 }
