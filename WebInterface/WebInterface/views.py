@@ -26,6 +26,19 @@ def contact():
         message='Your contact page.'
     )
 
+@app.route('/dashboard')
+def dashboard():
+    """Renders the about page."""
+    return render_template(
+        'dashboard.html',
+        title='Dashboard',
+        year=datetime.now().year,
+        message_1='Environmental Readings',
+        message_2='Acceleration Readings',
+        message_3='Orientation Readings'
+    )
+
+
 @app.route('/about')
 def about():
     """Renders the about page."""
@@ -33,5 +46,5 @@ def about():
         'about.html',
         title='About',
         year=datetime.now().year,
-        message='Your application description page.'
+        message='Software Developers'
     )
