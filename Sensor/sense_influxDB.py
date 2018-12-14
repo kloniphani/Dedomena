@@ -22,8 +22,7 @@ def get_args():
     parser.add_argument('-sn','--session', type=str, help='Session', required=True)
     now = datetime.datetime.now()
     parser.add_argument('-rn','--run', type=str, help='Run number', required=False,default=now.strftime("%Y%m%d%H%M"))
-    
-    # Array of all arguments passed to script
+   
     args=parser.parse_args()
     # Assign args to variables
     dbname=args.database
@@ -49,9 +48,7 @@ def get_data_points():
     roll = orientation['roll']
     yaw = orientation['yaw']
 
-    timestamp=datetime.datetime.utcnow().isoformat()
-    #print ("{0} {1} Temperature: {2}{3}C Pressure: {4}mb Humidity: {5}%" .format(session,runNo,round(temperature,1),u'u00b0'.encode('utf8'),round(pressure,3),round(humidity,1)))
-    
+    timestamp=datetime.datetime.utcnow().isoformat()    
     # Create Influxdb datapoints (using lineprotocol as of Influxdb >1.1)
     datapoints = [
             {
