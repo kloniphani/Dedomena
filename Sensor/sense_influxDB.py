@@ -80,8 +80,5 @@ try:
         
         sense.show_message("dedomena")
         time.sleep(sampling_period)
-        
-        # Run until keyboard ctrl-c
 except KeyboardInterrupt:
-    print ("Program stopped by keyboard interrupt [CTRL_C] by user. ")
     
