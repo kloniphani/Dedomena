@@ -36,6 +36,7 @@
     <Folder Include="WebInterface\static\" />
     <Folder Include="WebInterface\static\content\" />
     <Folder Include="WebInterface\static\fonts\" />
+    <Folder Include="WebInterface\static\images\" />
     <Folder Include="WebInterface\static\scripts\" />
     <Folder Include="WebInterface\templates\" />
   </ItemGroup>
@@ -48,6 +49,7 @@
     <Content Include="WebInterface\static\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="WebInterface\static\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="WebInterface\static\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="WebInterface\static\images\logistics.png" />
     <Content Include="WebInterface\static\scripts\bootstrap.js" />
     <Content Include="WebInterface\static\scripts\bootstrap.min.js" />
     <Content Include="WebInterface\static\scripts\jquery-1.10.2.intellisense.js" />
@@ -65,8 +67,10 @@
     <Content Include="WebInterface\static\scripts\_references.js" />
     <Content Include="WebInterface\templates\about.html" />
     <Content Include="WebInterface\templates\contact.html" />
+    <Content Include="WebInterface\templates\dashboard.html" />
     <Content Include="WebInterface\templates\index.html" />
     <Content Include="WebInterface\templates\layout.html" />
+    <Content Include="WebInterface\templates\tracking.html" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.Web.targets" />
   <!-- Specify pre- and post-build commands in the BeforeBuild and 

@@ -1,163 +1,167 @@
 {% extends "layout.html" %}
 
+{% block head %}
+{{ super() }}
+<script type="text/javascript" src="https://pubnub.github.io/eon/v/eon/1.0.0/eon.js"></script>
+<link type="text/css" rel="stylesheet" href="https://pubnub.github.io/eon/v/eon/1.0.0/eon.css" />
+{% endblock %}
+
+
 {% block content %}
 
 <h2>{{ title }}.</h2>
 
 <script type="text/javascript">
- var key="sub-c-7b8840c4-f940-11e8-ba8a-aef4d14eb57e";
+	var key = "sub-c-7b8840c4-f940-11e8-ba8a-aef4d14eb57e";
 </script>
 
 
 <h3>{{ message_1 }}</h3>
 <p>
-<div id="chart">
-	<script type="text/javascript">
-		var eon_pubnub = new PubNub({subscribeKey: key,restore: true});
-        var eon_cols = ["Temperature"]; 
-        var eon_labels = {"Temperature":"Temperature"};
+	<div id="chart">
+		<script type="text/javascript">
+			var eon_pubnub = new PubNub({ subscribeKey: key, restore: true });
+			var eon_cols = ["Temperature"];
+			var eon_labels = { "Temperature": "Temperature" };
 
-        chart = eon.chart({	pubnub: eon_pubnub,
-                            channels: ["senseHat"],
-                            history: true,
-                            flow: true,
-                            rate: 50,
-                            limit:100,
-                            generate: {
-										bindto: "#chart",
-                                        data: {	colors: {"Temperature":"#00FF00"},type: "spline"},
-                                        transition: { duration: 250},
-                                        axis: { x: { type : 'timeseries',tick: {format: '%H:%M:%S'}},
-                                                y: { label: "Ambient Temperature (Degrees Celcius)",max:50, min:0}
-                                               },
-                                        grid: {
-                                         			x: {show: true },
-                                                    y: {show: true }
-                                                },
-                                        tooltip: {
-                                                    show: true
-                                                },
-                                        point: {
-                                                    show: true
-                                                }
-                                       	},
+			chart = eon.chart({
+				pubnub: eon_pubnub,
+				channels: ["senseHat"],
+				history: true,
+				flow: true,
+				rate: 50,
+				limit: 100,
+				generate: {
+					bindto: "#chart",
+					data: { colors: { "Temperature": "#00FF00" }, type: "spline" },
+					transition: { duration: 250 },
+					axis: {
+						x: { type: 'timeseries', tick: { format: '%H:%M:%S' } },
+						y: { label: "Ambient Temperature (Degrees Celcius)", max: 50, min: 0 }
+					},
+					grid: {
+						x: { show: true },
+						y: { show: true }
+					},
+					tooltip: {
+						show: true
+					},
+					point: {
+						show: true
+					}
+				},
 
-                            transform: function(message)
-                            {
-                            	var message = eon.c.flatten(message.eon);
-                                var otemp = {};
-                                for(index in message) 
-                                {
-                                    if(eon_cols.indexOf(index) > -1)
-                                    {
-										otemp[eon_labels[index] || index] = message[index];
-                                    }
-                                }
-                                return {eon: otemp};
-                            }
-                        });
-     </script>
-</div>
+				transform: function (message) {
+					var message = eon.c.flatten(message.eon);
+					var otemp = {};
+					for (index in message) {
+						if (eon_cols.indexOf(index) > -1) {
+							otemp[eon_labels[index] || index] = message[index];
+						}
+					}
+					return { eon: otemp };
+				}
+			});
+		</script>
+	</div>
 </p>
 
 <p>
-<div id="pressure_chart">
-	<script type="text/javascript">
-		var pre_pubnub = new PubNub({subscribeKey: key});
-        var pre_cols = ["Pressure"]; 
-        var pre_labels = {"Pressure":"Pressure"};
+	<div id="pressure_chart">
+		<script type="text/javascript">
+			var pre_pubnub = new PubNub({ subscribeKey: key });
+			var pre_cols = ["Pressure"];
+			var pre_labels = { "Pressure": "Pressure" };
 
-        chart = eon.chart({	pubnub: pre_pubnub,
-                            channels: ["senseHat"],
-                            history: true,
-                            flow: true,
-                            rate: 50,
-                            limit: 100,
-                            generate: {
-										bindto: "#pressure_chart",
-                                        data: {	colors: {"Pressure":"#0099cc"},type: "spline"},
-                                        transition: { duration: 250},
-                                        axis: { x: { type : 'timeseries',tick: {format: '%H:%M:%S'}},
-                                                y: { label: "Pressure (Millibars)", max:1500, min:0}
-                                               },
-                                        grid: {
-                                         			x: {show: true },
-                                                    y: {show: true }
-                                                },
-                                        tooltip: {
-                                                    show: true
-                                                },
-                                        point: {
-                                                    show: true
-                                                }
-                                       	},
+			chart = eon.chart({
+				pubnub: pre_pubnub,
+				channels: ["senseHat"],
+				history: true,
+				flow: true,
+				rate: 50,
+				limit: 100,
+				generate: {
+					bindto: "#pressure_chart",
+					data: { colors: { "Pressure": "#0099cc" }, type: "spline" },
+					transition: { duration: 250 },
+					axis: {
+						x: { type: 'timeseries', tick: { format: '%H:%M:%S' } },
+						y: { label: "Pressure (Millibars)", max: 1500, min: 0 }
+					},
+					grid: {
+						x: { show: true },
+						y: { show: true }
+					},
+					tooltip: {
+						show: true
+					},
+					point: {
+						show: true
+					}
+				},
 
-                            transform: function(message)
-                            {
-                            	var message = eon.c.flatten(message.eon);
-                                var opre = {};
-                                for(index in message) 
-                                {
-                                    if(pre_cols.indexOf(index) > -1)
-                                    {
-										opre[pre_labels[index] || index] = message[index];
-                                    }
-                                }
-                                return {eon: opre};
-                            }
-                        });
-     </script>
-</div>
+				transform: function (message) {
+					var message = eon.c.flatten(message.eon);
+					var opre = {};
+					for (index in message) {
+						if (pre_cols.indexOf(index) > -1) {
+							opre[pre_labels[index] || index] = message[index];
+						}
+					}
+					return { eon: opre };
+				}
+			});
+		</script>
+	</div>
 </p>
 
 <p>
-<div id="humidity_chart">
-	<script type="text/javascript">
-		var hum_pubnub = new PubNub({subscribeKey: key});
-        var hum_cols = ["Humidity"]; 
-        var hum_labels = {"Humidity":"Humidity"};
+	<div id="humidity_chart">
+		<script type="text/javascript">
+			var hum_pubnub = new PubNub({ subscribeKey: key });
+			var hum_cols = ["Humidity"];
+			var hum_labels = { "Humidity": "Humidity" };
 
-        chart = eon.chart({	pubnub: hum_pubnub,
-                            channels: ["senseHat"],
-                            history: true,
-                            flow: true,
-                            rate: 50,
-                            limit: 100,
-                            generate: {
-										bindto: "#humidity_chart",
-                                        data: {	colors: {"Humidity":"#D70060"},type: "bar"},
-                                        transition: { duration: 250},
-                                        axis: { x: { type : 'timeseries',tick: {format: '%H:%M:%S'}},
-                                                y: { label: "Humidity (%)", max:100, min:0}
-                                               },
-                                        grid: {
-                                         			x: {show: true },
-                                                    y: {show: true }
-                                                },
-                                        tooltip: {
-                                                    show: true
-                                                },
-                                        point: {
-                                                    show: true
-                                                }
-                                       	},
+			chart = eon.chart({
+				pubnub: hum_pubnub,
+				channels: ["senseHat"],
+				history: true,
+				flow: true,
+				rate: 50,
+				limit: 100,
+				generate: {
+					bindto: "#humidity_chart",
+					data: { colors: { "Humidity": "#D70060" }, type: "bar" },
+					transition: { duration: 250 },
+					axis: {
+						x: { type: 'timeseries', tick: { format: '%H:%M:%S' } },
+						y: { label: "Humidity (%)", max: 100, min: 0 }
+					},
+					grid: {
+						x: { show: true },
+						y: { show: true }
+					},
+					tooltip: {
+						show: true
+					},
+					point: {
+						show: true
+					}
+				},
 
-                            transform: function(message)
-                            {
-                            	var message = eon.c.flatten(message.eon);
-                                var ohum = {};
-                                for(index in message) 
-                                {
-                                    if(hum_cols.indexOf(index) > -1)
-                                    {
-										ohum[hum_labels[index] || index] = message[index];
-                                    }
-                                }
-                                return {eon: ohum};
-                            }
-                        });
-     </script>
-</div>
+				transform: function (message) {
+					var message = eon.c.flatten(message.eon);
+					var ohum = {};
+					for (index in message) {
+						if (hum_cols.indexOf(index) > -1) {
+							ohum[hum_labels[index] || index] = message[index];
+						}
+					}
+					return { eon: ohum };
+				}
+			});
+		</script>
+	</div>
 </p>
 
 
@@ -165,50 +169,50 @@
 <p>
 	<div id="movement_chart">
 		<script type="text/javascript">
-			var __eon_pubnub = new PubNub({subscribeKey: key});
-			var __eon_cols = ["x","y","z"]; 
-			var __eon_labels = {}; 
+			var __eon_pubnub = new PubNub({ subscribeKey: key });
+			var __eon_cols = ["x", "y", "z"];
+			var __eon_labels = {};
 			chart = eon.chart({
-  			pubnub: __eon_pubnub,
-  			channels: ["senseHat"],
-  			history: false,
-  			flow: true,
-  			rate: 1000,
-  			limit: 5,
-  			generate: {
-   						bindto: "#movement_chart",
-    					data: {
-      							colors: {"x":"#D70060","y":"#E54028","z":"#F18D05"},
-      							type: "spline"
-    							},
-    					transition: {
-      							duration: 250
-    							},
-    					axis: {
-      							x: { type : 'timeseries',tick: {format: '%H:%M:%S'}},
-                                y: { label: "Acceleration", max:50, min:-50}
-    							},
-    					grid: {
-      							x: {show: true },
-      							y: {show: true}
-    							},
-    					tooltip: {
-     									show: true
-    							},
-    					point: {
-      									show: true
-    							}
-  						},
-  			transform: function(message) {
-    			var message = eon.c.flatten(message.eon);
-    			var o = {};
-    			for(index in message) {
-      					if(__eon_cols.indexOf(index) > -1){
-        					o[__eon_labels[index] || index] = message[index];
-      					}
-    			}
-    			return {eon: o};
-  			}
+				pubnub: __eon_pubnub,
+				channels: ["senseHat"],
+				history: false,
+				flow: true,
+				rate: 1000,
+				limit: 5,
+				generate: {
+					bindto: "#movement_chart",
+					data: {
+						colors: { "x": "#D70060", "y": "#E54028", "z": "#F18D05" },
+						type: "spline"
+					},
+					transition: {
+						duration: 250
+					},
+					axis: {
+						x: { type: 'timeseries', tick: { format: '%H:%M:%S' } },
+						y: { label: "Acceleration", max: 50, min: -50 }
+					},
+					grid: {
+						x: { show: true },
+						y: { show: true }
+					},
+					tooltip: {
+						show: true
+					},
+					point: {
+						show: true
+					}
+				},
+				transform: function (message) {
+					var message = eon.c.flatten(message.eon);
+					var o = {};
+					for (index in message) {
+						if (__eon_cols.indexOf(index) > -1) {
+							o[__eon_labels[index] || index] = message[index];
+						}
+					}
+					return { eon: o };
+				}
 			});
 		</script>
 	</div>
@@ -218,50 +222,50 @@
 <p>
 	<div id="orientation_chart">
 		<script type="text/javascript">
-			var ori_pubnub = new PubNub({subscribeKey: key});
-			var ori_cols = ["pitch","roll","yaw"]; 
-			var ori_labels = {}; 
+			var ori_pubnub = new PubNub({ subscribeKey: key });
+			var ori_cols = ["pitch", "roll", "yaw"];
+			var ori_labels = {};
 			chart = eon.chart({
-  			pubnub: ori_pubnub,
-  			channels: ["senseHat"],
-  			history: false,
-  			flow: true,
-  			rate: 1000,
-  			limit: 5,
-  			generate: {
-   						bindto: "#orientation_chart",
-    					data: {
-      							colors: {"pitch":"#D70060","roll":"#E54028","yaw":"#F18D05"},
-      							type: "spline"
-    							},
-    					transition: {
-      							duration: 250
-    							},
-    					axis: {
-      							x: { type : 'timeseries',tick: {format: '%H:%M:%S'}},
-                                y: { label: "Orientation", max:360, min:0}
-    							},
-    					grid: {
-      							x: {show: true },
-      							y: {show: true}
-    							},
-    					tooltip: {
-     									show: true
-    							},
-    					point: {
-      									show: true
-    							}
-  						},
-  			transform: function(message) {
-    			var message = eon.c.flatten(message.eon);
-    			var ori_o = {};
-    			for(index in message) {
-      					if(ori_cols.indexOf(index) > -1){
-        					ori_o[ori_labels[index] || index] = message[index];
-      					}
-    			}
-    			return {eon: ori_o};
-  			}
+				pubnub: ori_pubnub,
+				channels: ["senseHat"],
+				history: false,
+				flow: true,
+				rate: 1000,
+				limit: 5,
+				generate: {
+					bindto: "#orientation_chart",
+					data: {
+						colors: { "pitch": "#D70060", "roll": "#E54028", "yaw": "#F18D05" },
+						type: "spline"
+					},
+					transition: {
+						duration: 250
+					},
+					axis: {
+						x: { type: 'timeseries', tick: { format: '%H:%M:%S' } },
+						y: { label: "Orientation", max: 360, min: 0 }
+					},
+					grid: {
+						x: { show: true },
+						y: { show: true }
+					},
+					tooltip: {
+						show: true
+					},
+					point: {
+						show: true
+					}
+				},
+				transform: function (message) {
+					var message = eon.c.flatten(message.eon);
+					var ori_o = {};
+					for (index in message) {
+						if (ori_cols.indexOf(index) > -1) {
+							ori_o[ori_labels[index] || index] = message[index];
+						}
+					}
+					return { eon: ori_o };
+				}
 			});
 		</script>
 	</div>

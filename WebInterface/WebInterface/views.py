@@ -38,6 +38,15 @@ def dashboard():
         message_3='Orientation Readings'
     )
 
+@app.route('/tracking')
+def tracking():
+    """Renders the tracking page."""
+    return render_template(
+        'tracking.html',
+        title='Tracking',
+        year=datetime.now().year,
+        message='Phone Tracking'
+    )
 
 @app.route('/about')
 def about():
