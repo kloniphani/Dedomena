@@ -1,35 +1,46 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <!--
-        Customize the content security policy in the meta tag below as needed. Add 'unsafe-inline' to default-src to enable inline JavaScript.
-        For details, see http://go.microsoft.com/fwlink/?LinkID=617521
-    -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap://ready file://* *; style-src 'self' http://* https://* 'unsafe-inline'; script-src 'self' http://* https://* 'unsafe-inline' 'unsafe-eval'; media-src *">
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-    <meta name="format-detection" content="telephone=no">
-    <meta name="msapplication-tap-highlight" content="no">
-    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+	<!--
+		Customize the content security policy in the meta tag below as needed. Add 'unsafe-inline' to default-src to enable inline JavaScript.
+		For details, see http://go.microsoft.com/fwlink/?LinkID=617521
+	-->
+	<!--
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap://ready file://* *; style-src 'self' http://* https://* 'unsafe-inline'; script-src 'self' http://* https://* 'unsafe-inline' 'unsafe-eval'; media-src *;">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	-->
+	<!--
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
+	-->
+	<!-- Enable all requests, inline styles, and eval() -->
+	<meta http-equiv="Content-Security-Policy" content="default-src: 'self' data: gap://ready file://* https://myhost https://maps.google.com * 'unsafe-inline' 'unsafe-eval'">
+	<meta http-equiv="Content-Security-Policy" content="script-src: 'self' data: gap://ready file://* https://myhost https://maps.google.com * 'unsafe-inline' 'unsafe-eval'">
 
-    <title>App</title>
 
-    <!--Additional packages for Here Map framework-->
-    <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.0/mapsjs-ui.css?dp-version=1542186754" />
-    <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-core.js"></script>
-    <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-service.js"></script>
-    <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-ui.js"></script>
-    <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-mapevents.js"></script>
 
-    <!--Responsive scripts: JQuery, Popper, Bootstrap, FontAwesome-->
-    <link href="../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <script type="text/javascript" src="../bower_components/jQuery/dist/jquery.min.js"></script>
-    <script type="text/javascript" src="../bower_components/popper.js/dist/popper.min.js"></script>
-    <script type="text/javascript" src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-    <link href="../bower_components/font-awesome/css/all.css" rel="stylesheet" type="text/css"/>
-    <script type="text/javascript"src="../bower_components/font-awesome/js/all.js"></script>
+	<meta name="format-detection" content="telephone=no">
+	<meta name="msapplication-tap-highlight" content="no">
+	<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
 
-    <!--Stylesheet-->
-    <link rel="stylesheet" type="text/css" href="css/index.css">
+	<title>App</title>
+
+	<!--Additional packages for Here Map framework-->
+	<link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.0/mapsjs-ui.css?dp-version=1542186754" />
+	<script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-core.js"></script>
+	<script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-service.js"></script>
+	<script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-ui.js"></script>
+	<script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-mapevents.js"></script>
+
+	<!--Responsive scripts: JQuery, Popper, Bootstrap, FontAwesome-->
+	<link href="./bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="./bower_components/jQuery/dist/jquery.min.js"></script>
+	<script type="text/javascript" src="./bower_components/popper.js/dist/popper.min.js"></script>
+	<script type="text/javascript" src="./bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<link href="./bower_components/font-awesome/css/all.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="./bower_components/font-awesome/js/all.js"></script>
+
+	<!--Stylesheet-->
+	<link rel="stylesheet" type="text/css" href="./css/index.css">
 </head>
 
 <body>

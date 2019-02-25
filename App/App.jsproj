@@ -85,6 +85,9 @@
     <Content Include="**\**" Exclude="**\platforms\**;**\bin\**;**\bld\**;**\node_modules\**;**\simulation\**;**\plugins\**;.gitignore;App.*" />
   </ItemGroup>
   <ItemGroup>
+    <Content Remove="www\bower_components\popper.js\packages\test\bin\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Update="config.xml">
       <SubType>Designer</SubType>
     </Content>
