@@ -7,6 +7,8 @@ Project("{262852C6-CD72-467D-83FE-5EEB1973A190}") = "App", "App\App.jsproj", "{D
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "WebInterface", "WebInterface\WebInterface.pyproj", "{B51DF16E-0449-4A67-A1C2-244BBA86BE73}"
 EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Database", "Database\Database.pyproj", "{1D59F6A5-5F40-45BE-8379-B510EDB5F6C9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Android = Debug|Android
@@ -79,6 +81,18 @@ Global
 		{B51DF16E-0449-4A67-A1C2-244BBA86BE73}.Release|Windows-x64.Build.0 = Release|Any CPU
 		{B51DF16E-0449-4A67-A1C2-244BBA86BE73}.Release|Windows-x86.ActiveCfg = Release|Any CPU
 		{B51DF16E-0449-4A67-A1C2-244BBA86BE73}.Release|Windows-x86.Build.0 = Release|Any CPU
+		{1D59F6A5-5F40-45BE-8379-B510EDB5F6C9}.Debug|Android.ActiveCfg = Debug|Any CPU
+		{1D59F6A5-5F40-45BE-8379-B510EDB5F6C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D59F6A5-5F40-45BE-8379-B510EDB5F6C9}.Debug|iOS.ActiveCfg = Debug|Any CPU
+		{1D59F6A5-5F40-45BE-8379-B510EDB5F6C9}.Debug|Windows-ARM.ActiveCfg = Debug|Any CPU
+		{1D59F6A5-5F40-45BE-8379-B510EDB5F6C9}.Debug|Windows-x64.ActiveCfg = Debug|Any CPU
+		{1D59F6A5-5F40-45BE-8379-B510EDB5F6C9}.Debug|Windows-x86.ActiveCfg = Debug|Any CPU
+		{1D59F6A5-5F40-45BE-8379-B510EDB5F6C9}.Release|Android.ActiveCfg = Release|Any CPU
+		{1D59F6A5-5F40-45BE-8379-B510EDB5F6C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D59F6A5-5F40-45BE-8379-B510EDB5F6C9}.Release|iOS.ActiveCfg = Release|Any CPU
+		{1D59F6A5-5F40-45BE-8379-B510EDB5F6C9}.Release|Windows-ARM.ActiveCfg = Release|Any CPU
+		{1D59F6A5-5F40-45BE-8379-B510EDB5F6C9}.Release|Windows-x64.ActiveCfg = Release|Any CPU
+		{1D59F6A5-5F40-45BE-8379-B510EDB5F6C9}.Release|Windows-x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

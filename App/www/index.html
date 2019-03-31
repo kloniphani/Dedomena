@@ -219,9 +219,9 @@
                                                 'speed': String(position.coords.speed),
                                                 'timestamp': position.timestamp
                                             },
-                                            'trafficFlow': trafficFlow,
-                                            'trafficIncidents': trafficIncidents,
-                                            'weather': weather
+                                            //'trafficFlow': trafficFlow,
+                                            //'trafficIncidents': trafficIncidents,
+                                            //'weather': weather
                                         }
                                         firebase.database().ref('Tracking/' + position.timestamp).set(message);
                                         //database.ref('/Tracking').child(String(position.timestamp)).push().set(message);
