@@ -1,18 +1,19 @@
 from Connection import *
 
+
 class Upload(object):
 	"""description of class"""
 	from sense_hat import SenseHat
 	import os, pyrebase, pubnub, sys, time, datetime;
 
-	def get_mac(self):
+	def get_mac():
 		import uuid
 		mac_num = hex(uuid.getnode()).replace('0x', '').upper()
 		mac = '-'.join(mac_num[i: i + 2] for i in range(0, 11, 2))
 		return mac
 
 	SENSE = SenseHat()
-	MacAddress = self.get_mac()
+	MacAddress = get_mac()
 
 	# Connecting to Impala database in Cloudera
 	IMPALA_CONNECTION = Connection.Connection();
