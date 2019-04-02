@@ -36,7 +36,7 @@ class Upload(object):
 	}
 
 	def pushEnvironmentalReadings(self, interval = 10, print_results = True):
-		from time import sleep, time
+		import time
 
 		#Take readings from all three sensors and ound the values to one decimal place
 		while(True):
@@ -45,8 +45,8 @@ class Upload(object):
 				Pressure = self.SENSE.get_pressure()
 				Humidity = self.SENSE.get_humidity()
 
-				time_sense = time.strftime('%H:%M:%S')
-				date_sense = time.strftime('%d/%m/%Y')
+				time_sense = time.time.strftime('%H:%M:%S')
+				date_sense = time.time.strftime('%d/%m/%Y')
 				data = {"MAC": self.MacAddress, "Date": date_sense, "Time": time_sense, "Temperature": Temperature, "Humidity": Humidity, "Pressure": Pressure}
 
 				try:
@@ -94,10 +94,10 @@ class Upload(object):
 					print("\tTemperature: {0}C\tPressure: {1}Mb\tHumidity: {2}%\n\n".format(Temperature, Pressure, Humidity))
 			except Exception as e:
 				raise
-			sleep(interval)
+			time.sleep(interval)
 
 	def pushMovementReadings(self, interval = 1, print_results = True):
-		from time import sleep
+		import time
 
 		while(True):
 			try:
@@ -150,7 +150,7 @@ class Upload(object):
 					print("\tPitch {0} Roll {1} Yaw {2}\n\n".format(pitch, roll, yaw))
 			except Exception as e:
 				raise
-			sleep(interval)
+			time.sleep(interval)
 
 	def deviceState(self):
 		while True:
@@ -179,7 +179,7 @@ class Upload(object):
 				self.SENSE.clear()
 
 	def joysticMovements(self):
-		from time import sleep
+		import time
 
 		MessageSpeed = 0.05; ValueSpeed = 0.05
 		TextColour = self.COLOR['orange'];
@@ -205,7 +205,7 @@ class Upload(object):
 						self.SENSE.show_letter("!", text_colour=TextColour)
 
 					# Wait a while and then clear the screen
-					sleep(0.5)
+					time.sleep(0.5)
 
 
 if __name__ == '__main__':
