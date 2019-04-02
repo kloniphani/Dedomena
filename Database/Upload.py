@@ -7,7 +7,8 @@ class Upload(object):
 	from pubnub.pnconfiguration import PNConfiguration
 	from pubnub.exceptions import PubNubException
 
-	import uuid, os, pyrebase, pubnub, sys, time, datetime
+	import uuid, os, pyrebase, pubnub, sys, time, datetime;
+	import mysql.connector
 
 	def get_mac():
 	  mac_num = hex(uuid.getnode()).replace('0x', '').upper()
@@ -60,15 +61,27 @@ class Upload(object):
 			pass
 
 
-
 	my_listener = SubscribeListener()                   # create listner_object to read the msg from the Broker/Server
 	pubnub.add_listener(my_listener)                    # add listner_object to pubnub_object to subscribe it
 	pubnub.subscribe().channels(channel).execute()      # subscribe the channel (Runs in background)
 
 
 	my_listener.wait_for_connect()                      # wait for the listner_obj to connect to the Broker.Channel
-	print('Connected to PubNub')                                  # print confirmation msg
+	print('Connected to PubNub')                        # print confirmation msg
 
+	#Connection to MySQL
+	cnx = mysql.connector.connect(user='adam', password='passwd',
+								  host='10.48.80.33',
+								  port='3306',
+								  database='dedomena')
+	try:
+		cursor = cnx.cursor();
+		cursor.execute("show tables;");
+		result = cursor.fetchall();
+		print("%Successfully Connected to the database with these tables -- {0}".format(result));
+	except:
+		cnx.rollback()
+		print('!Could not connect to MySql\n\tError: {0}'.format(sys.exc_info()[0]));
 
 
 	def pushEnvironmentalReadings(interval = 10, print_results = True):
@@ -84,6 +97,43 @@ class Upload(object):
 				data = {"MAC": MacAddress, "Date": date_sense, "Time": time_sense, "Temperature": Temperature, "Humidity": Humidity, "Pressure": Pressure}
 
 				db.child("/Environment").push(data)
+
+				try:
+					cursor = cnx.cursor();
+					query = "INSERT INTO `device` (`macAddress`, `manufacturer`, `model`) VALUES(%s, %s, %s);";
+					values = (MacAddress, 'Raspberry Pi', 'Model B+');
+					result = cursor.execute(query, values)
+					cnx.commit()
+				except:
+					print('!Could not insert a new record  to MySql\n\tError: {0}\n\t\t{1}\n\t\t{2}'.format(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2]));
+				finally:
+					if(cnx.is_connected()):
+						cursor.close()
+
+				try:
+					cursor = cnx.cursor();
+					query = "INSERT INTO `timestamp` (`date`,`time`) VALUES(%s, %s);";
+					values = (date_sense, time_sense);
+					result = cursor.execute(query, values)
+					cnx.commit()
+				except:
+					print('!Could not insert a new record  to MySql\n\tError: {0}\n\t\t{1}\n\t\t{2}'.format(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2]));
+				finally:
+					if(cnx.is_connected()):
+						cursor.close()
+
+				try:
+					cursor = cnx.cursor();
+					query =   "INSERT INTO `sensor` (`timestamp`,`deviceMacAddress`, `pressure`, `temperature`, `humidity`) VALUES (LAST_INSERT_ID(), %s, %s, %s, %s);";
+					values = (MacAddress, Pressure, Temperature, Humidity);
+					result = cursor.execute(query, values)
+					cnx.commit()
+				except:
+					print('!Could not insert a new record  to MySql\n\tError: {0}\n\t\t{1}\n\t\t{2}'.format(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2]));
+				finally:
+					if(cnx.is_connected()):
+						cursor.close()
+
 				if print_results == True:
 					print("Time: {0}\tMacAddress: {1}".format(time_sense, MacAddress))
 					print("\tTemperature: {0}C\tPressure: {1}Mb\tHumidity: {2}%\n\n".format(Temperature, Pressure, Humidity))
@@ -150,7 +200,7 @@ class Upload(object):
 					}
 				pubnub.publish().channel(channel).message({"eon": data}).pn_async(my_publish_callback)
 			except Exception as e:
-				raise
+            			raise
 			sleep(interval)
 
 	def deviceState():
@@ -186,28 +236,29 @@ class Upload(object):
 		while True:
 			for event in sense.stick.get_events():
 				# Check if the joystick was pressed
-				if event.action == "pressed":  
-					# Check which direction
-					if event.direction == "up":
-						sense.show_message("Temperature", text_colour=TextColour, scroll_speed=MessageSpeed)
-						sense.show_message("{0}C".format(round(sense.get_temperature(), 1)), text_colour=TextColour, scroll_speed=ValueSpeed)
-					elif event.direction == "down":
-						sense.show_message("Pressure", text_colour=TextColour, scroll_speed=MessageSpeed)
-						sense.show_message("{0}Mb".format(round(sense.get_pressure(), 1)), text_colour=TextColour, scroll_speed=ValueSpeed)
-					elif event.direction == "left":
-						sense.show_message("Humidity", text_colour=TextColour, scroll_speed=MessageSpeed)
-						sense.show_message("{0}%".format(round(sense.get_humidity(), 1)), text_colour=TextColour, scroll_speed=ValueSpeed)
-					elif event.direction == "right":
-						sense.show_message("Compass", text_colour=TextColour, scroll_speed=MessageSpeed)
-						sense.show_message("{0} N".format(round(sense.compass, 1)), text_colour=TextColour, scroll_speed=ValueSpeed)
-					elif event.direction == "middle":
-						sense.show_letter("!", text_colour=TextColour)
+				if event.action == "pressed":
 
-					# Wait a while and then clear the screen
-					sleep(0.5)
+				  # Check which direction
+				  if event.direction == "up":
+					  sense.show_message("Temperature", text_colour=TextColour, scroll_speed=MessageSpeed)
+					  sense.show_message("{0}C".format(round(sense.get_temperature(), 1)), text_colour=TextColour, scroll_speed=ValueSpeed)
+				  elif event.direction == "down":
+					  sense.show_message("Pressure", text_colour=TextColour, scroll_speed=MessageSpeed)
+					  sense.show_message("{0}Mb".format(round(sense.get_pressure(), 1)), text_colour=TextColour, scroll_speed=ValueSpeed)
+				  elif event.direction == "left":
+					  sense.show_message("Humidity", text_colour=TextColour, scroll_speed=MessageSpeed)
+					  sense.show_message("{0}%".format(round(sense.get_humidity(), 1)), text_colour=TextColour, scroll_speed=ValueSpeed)
+				  elif event.direction == "right":
+					  sense.show_message("Compass", text_colour=TextColour, scroll_speed=MessageSpeed)
+					  sense.show_message("{0} N".format(round(sense.compass, 1)), text_colour=TextColour, scroll_speed=ValueSpeed)
+				  elif event.direction == "middle":
+					  sense.show_letter("!", text_colour=TextColour)
+				  # Wait a while and then clear the screen
+				  sleep(0.5)
 
+	pushEnvironmentalReadings();
 
-	a = Process(target=joysticMovements)
+	"""a = Process(target=joysticMovements)
 	a.start()
 
 	b = Process(target=deviceState)
@@ -226,6 +277,8 @@ class Upload(object):
 	b.join()
 	c.join()
 	d.join()
-	e.join
+	e.join """
 
-
+	#Clossing the connection to MySQL database
+	if(cnx.is_connected()):
+		cnx.close()
