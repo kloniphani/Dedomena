@@ -31,6 +31,7 @@ class Upload(object):
 		'violet': (238, 130, 238),
 		'brown': (165, 42, 42),
 		'purple': (128, 0, 128),
+		'custom' : (255, 255, 255)
 	}
 
 	def pushEnvironmentalReadings(self, interval = 10, print_results = True):
