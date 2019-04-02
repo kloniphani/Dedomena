@@ -207,9 +207,11 @@ class Upload(object):
 					# Wait a while and then clear the screen
 					sleep(0.5)
 
-if __name__ is '__main__':
+
+if __name__ == '__main__':
 	from multiprocessing import Process
 
+	print("Importing data to impala")
 	uploadToImpala = Upload()
 
 	a = Process(target=uploadToImpala.joysticMovements)
