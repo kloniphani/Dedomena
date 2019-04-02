@@ -10,7 +10,7 @@ class Connection(object):
 		try:
 			self.CONNECTION = dbapi.connect(Daemon, Port)
 		except:
-			print("Unexpected error: {0}".format(exc_info()[0]))
+			print("Unexpected error on function: {0}\nClass:\t{1]\nDetails:\t{2}".format("Impala", exc_info()[0], exc_info()[1]))
 
 		return self.CONNECTION;
 
@@ -21,7 +21,7 @@ class Connection(object):
 		try:
 			self.CONNECTION = hive.connect(Server, Port)
 		except:
-			print("Unexpected error: {0}".format(exc_info()[0]))
+			print("Unexpected error on function: {0}\nClass:\t{1]\nDetails:\t{2}".format("Hive", exc_info()[0], exc_info()[1]))
 		
 		return self.CONNECTION;
 
@@ -37,7 +37,7 @@ class Connection(object):
 				else:
 					return cursor.fetchone()
 			except:
-				print("Unexpected error: {0}".format(exc_info()[0]))
+				print("Unexpected error on function: {0}\nClass:\t{1]\nDetails:\t{2}".format("Excute",exc_info()[0],exc_info()[1]))
 
 		else:
 			print("!Not connected to any database");													    
