@@ -16,7 +16,7 @@ class Upload(object):
 	MacAddress = get_mac()
 
 	# Connecting to Impala database in Cloudera
-	IMPALA_CONNECTION = Connection.Connection();
+	IMPALA_CONNECTION = Connection();
 	IMPALA_CONNECTION.Impala(Daemon='172.21.5.201')
 
 	# Define the colours in a dictionary
