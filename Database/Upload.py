@@ -213,8 +213,9 @@ if __name__ == '__main__':
 
 	print("Importing data to impala")
 	uploadToImpala = Upload()
+	uploadToImpala.pushEnvironmentalReadings()
 
-	a = Process(target=uploadToImpala.joysticMovements)
+	"""a = Process(target=uploadToImpala.joysticMovements)
 	a.start()
 
 	b = Process(target=uploadToImpala.deviceState)
@@ -229,5 +230,5 @@ if __name__ == '__main__':
 	a.join()
 	b.join()
 	c.join()
-	d.join
+	d.join"""
 
