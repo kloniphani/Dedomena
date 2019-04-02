@@ -1,4 +1,4 @@
-from . import *
+from Connection import *
 
 class Upload(object):
 	"""description of class"""
