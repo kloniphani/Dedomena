@@ -12,7 +12,7 @@ class Upload(object):
 		return mac
 
 	SENSE = SenseHat()
-	MacAddress = get_mac()
+	MacAddress = self.get_mac()
 
 	# Connecting to Impala database in Cloudera
 	IMPALA_CONNECTION = Connection.Connection();
