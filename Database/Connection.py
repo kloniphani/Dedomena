@@ -43,6 +43,8 @@ class Connection(object):
                     return cursor.fetchone()
             except Exception as e:
                 print("Unexpected error on function: {0}\nDetails:\t{1}".format("Excute", e))
+            finally:
+                cursor.close()
         else:
             print("!Not connected to any database")
         return None

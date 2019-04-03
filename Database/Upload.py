@@ -60,7 +60,7 @@ class Upload(object):
         self.IMPALA_CONNECTION.Execute(Query)
 
         Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.device (" \
-                "timestamp STRING, " \
+                "id_timestamp STRING, " \
                 "deviceMacAddress STRING, " \
                 "pressure FLOAT, " \
                 "temperature FLOAT, " \
@@ -80,15 +80,14 @@ class Upload(object):
                 time_sense = time.strftime('%H:%M:%S')
                 date_sense = time.strftime('%d/%m/%Y')
 
-
                 Query = "INSERT INTO dedomena.device (macAddress, manufacturer, model) VALUES('{0}', '{1}', '{2}');".format(self.MacAddress, 'Raspberry Pi', 'Model B+');
                 self.IMPALA_CONNECTION.Execute(Query)
 
                 Query = "INSERT INTO dedomena.device (date, time) VALUES({0}, {1});".format(date_sense, time_sense);
-                #self.IMPALA_CONNECTION.Execute(Query)
+                self.IMPALA_CONNECTION.Execute(Query)
 
                 Query = "INSERT INTO dedomena.device (timestamp,deviceMacAddress, pressure, temperature, humidity) VALUES('{0}', '{1}', {2}, {3}, {4});".format(time_sense, self.MacAddress, Pressure, Temperature, Humidity);
-                #self.IMPALA_CONNECTION.Execute(Query)
+                self.IMPALA_CONNECTION.Execute(Query)
 
                 if print_results == True:
                     print("Time: {0}\tMacAddress: {1}".format(time_sense, self.MacAddress))
@@ -212,9 +211,9 @@ if __name__ == '__main__':
 
     uploadToImpala = Upload()
     uploadToImpala.connectToImpala('172.21.5.201', 21050)
-    uploadToImpala.pushEnvironmentalReadings()
+    #uploadToImpala.pushEnvironmentalReadings()
 
-    """a = Process(target=uploadToImpala.joysticMovements)
+    a = Process(target=uploadToImpala.joysticMovements)
     a.start()
     
     b = Process(target=uploadToImpala.deviceState)
@@ -229,5 +228,5 @@ if __name__ == '__main__':
     a.join()
     b.join()
     c.join()
-    d.join"""
+    d.join
 
