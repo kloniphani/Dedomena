@@ -31,18 +31,19 @@ COLOR = {
     'custom' : (255, 255, 255)
 }
 
-IMPALA_CONNECTION = None
-
 
 def connectToImpala(Daemon, Port = 21050):
     # Connecting to Impala database in Cloudera
     IMPALA_CONNECTION = Connection();
     IMPALA_CONNECTION.Impala(Daemon, Port)
+    return IMPALA_CONNECTION
 
 
 def pushEnvironmentalReadings(interval = 10, print_results = True):
     from time import sleep
     from datetime import datetime
+
+    IMPALA_CONNECTION = connectToImpala('172.21.5.201')
 
     #Checking the Tables and Database in the server
     Query = "CREATE DATABASE IF NOT EXISTS dedomena COMMENT 'Database to store sensor reading' LOCATION '/test-warehouse/data/sensor';"
@@ -101,6 +102,8 @@ def pushEnvironmentalReadings(interval = 10, print_results = True):
 
 def pushMovementReadings(interval = 1, print_results = True):
     import time
+
+    IMPALA_CONNECTION = connectToImpala('172.21.5.201')
 
     # Checking the Tables and Database in the server
     Query = "CREATE DATABASE IF NOT EXISTS dedomena COMMENT 'Database to store sensor reading' LOCATION '/test-warehouse/data/sensor';"
@@ -214,10 +217,6 @@ def joysticMovements():
 if __name__ == '__main__':
     from multiprocessing import Process
 
-
-    connectToImpala('172.21.5.201', 21050)
-    #uploadToImpala.pushEnvironmentalReadings()
-
     a = Process(target=joysticMovements)
     a.start()
     
@@ -227,11 +226,11 @@ if __name__ == '__main__':
     c = Process(target=pushEnvironmentalReadings)
     c.start()
     
-    d = Process(target=pushMovementReadings)
-    d.start()
+    #d = Process(target=pushMovementReadings)
+    #d.start()
     
     a.join()
     b.join()
-    c.join()
-    d.join
+    c.join
+    #d.join
 
