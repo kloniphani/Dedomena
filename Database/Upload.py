@@ -15,10 +15,6 @@ class Upload(object):
     SENSE = SenseHat()
     MacAddress = get_mac()
 
-    # Connecting to Impala database in Cloudera
-    IMPALA_CONNECTION = Connection();
-    IMPALA_CONNECTION.Impala(Daemon='172.21.5.201')
-
     # Define the colours in a dictionary
     COLOR = {
         'red': (255, 0, 0),
@@ -34,6 +30,13 @@ class Upload(object):
         'purple': (128, 0, 128),
         'custom' : (255, 255, 255)
     }
+
+    IMPALA_CONNECTION = None
+
+    def connectToImpala(self, Daemon, Port = 21050):
+        # Connecting to Impala database in Cloudera
+        self.IMPALA_CONNECTION = Connection();
+        self.IMPALA_CONNECTION.Impala(Daemon, Port)
 
     def pushEnvironmentalReadings(self, interval = 10, print_results = True):
         from time import sleep
@@ -216,8 +219,8 @@ class Upload(object):
 if __name__ == '__main__':
     from multiprocessing import Process
 
-    print("Importing data to impala")
-    #uploadToImpala = Upload()
+    uploadToImpala = Upload()
+    uploadToImpala.connectToImpala('172.21.5.201', 21050)
     #uploadToImpala.pushEnvironmentalReadings()
 
     """a = Process(target=uploadToImpala.joysticMovements)
