@@ -59,7 +59,7 @@ class Upload(object):
                     Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.device (" \
                             "macAddress STRING, " \
                             "manufacturer STRING, " \
-                            "model STRING) " \
+                            "model STRING)" \
                             "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
                     self.IMPALA_CONNECTION.Execute(Query)
 
