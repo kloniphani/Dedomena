@@ -89,10 +89,10 @@ def pushEnvironmentalReadings(interval = 10, print_results = True):
             Query = "INSERT INTO dedomena.device (id_timestamp, macAddress, manufacturer, model) VALUES('{0}', '{1}', '{2}', '{3}');".format(stamp, MacAddress, 'Raspberry Pi', 'Model B+');
             IMPALA_CONNECTION.Execute(Query)
 
-            Query = "INSERT INTO dedomena.device (date, time) VALUES({0}, {1});".format(date_sense, time_sense);
+            Query = "INSERT INTO dedomena.timestamp (date, time) VALUES({0}, {1});".format(date_sense, time_sense);
             IMPALA_CONNECTION.Execute(Query)
 
-            Query = "INSERT INTO dedomena.device (id_timestamp, deviceMacAddress, pressure, temperature, humidity) VALUES('{0}', '{1}', {2}, {3}, {4});".format(stamp, MacAddress, Pressure, Temperature, Humidity);
+            Query = "INSERT INTO dedomena.sensor (id_timestamp, deviceMacAddress, pressure, temperature, humidity) VALUES('{0}', '{1}', {2}, {3}, {4});".format(stamp, MacAddress, Pressure, Temperature, Humidity);
             IMPALA_CONNECTION.Execute(Query)
 
             if print_results == True:
@@ -153,7 +153,7 @@ def pushMovementReadings(interval = 1, print_results = True):
             Query = "INSERT INTO dedomena.acceleration (id_timestamp, macAddress, manufacturer, model) VALUES('{0}', '{1}', {2}, {3});".format(stamp, MacAddress, x, y, z);
             IMPALA_CONNECTION.Execute(Query)
 
-            Query = "INSERT INTO dedomena.orientation (macAddress, manufacturer, model) VALUES('{0}', '{1}', {2}, {3});".format(stamp, MacAddress, pitch, roll, yaw);
+            Query = "INSERT INTO dedomena.orientation (id_timestamp, macAddress, manufacturer, model) VALUES('{0}', '{1}', {2}, {3});".format(stamp, MacAddress, pitch, roll, yaw);
             IMPALA_CONNECTION.Execute(Query)
 
             if print_results == True:
