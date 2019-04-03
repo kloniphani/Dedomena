@@ -62,7 +62,7 @@ class Upload(object):
                             "manufacturer STRING, " \
                             "model STRING, " \
                             "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
-                    self.IMPALA_CONNECTION.Execute(Query)
+                    self.IMPALA_CONNECTION.Execute("SHOW DATABASES")
                     print("___________DEVICE")
 
                     Query = "INSERT INTO dedomena.device (macAddress, manufacturer, model) VALUES({0}, {1}, {2});".format(self.MacAddress, 'Raspberry Pi', 'Model B+');
@@ -221,7 +221,7 @@ if __name__ == '__main__':
 
     uploadToImpala = Upload()
     uploadToImpala.connectToImpala('172.21.5.201', 21050)
-    #uploadToImpala.pushEnvironmentalReadings()
+    uploadToImpala.pushEnvironmentalReadings()
 
     """a = Process(target=uploadToImpala.joysticMovements)
     a.start()
