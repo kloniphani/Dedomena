@@ -217,8 +217,8 @@ if __name__ == '__main__':
     from multiprocessing import Process
 
     print("Importing data to impala")
-    uploadToImpala = Upload()
-    uploadToImpala.pushEnvironmentalReadings()
+    #uploadToImpala = Upload()
+    #uploadToImpala.pushEnvironmentalReadings()
 
     """a = Process(target=uploadToImpala.joysticMovements)
     a.start()
