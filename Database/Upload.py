@@ -36,7 +36,8 @@ class Upload(object):
 	}
 
 	def pushEnvironmentalReadings(self, interval = 10, print_results = True):
-		import time
+		from time import sleep
+		from datetime import datetime
 
 		#Take readings from all three sensors and ound the values to one decimal place
 		while(True):
@@ -45,9 +46,9 @@ class Upload(object):
 				Pressure = self.SENSE.get_pressure()
 				Humidity = self.SENSE.get_humidity()
 
-				time_sense = time.time.strftime('%H:%M:%S')
-				date_sense = time.time.strftime('%d/%m/%Y')
-				data = {"MAC": self.MacAddress, "Date": date_sense, "Time": time_sense, "Temperature": Temperature, "Humidity": Humidity, "Pressure": Pressure}
+				time = datetime.now()
+				time_sense = time.strftime('%H:%M:%S')
+				date_sense = time.strftime('%d/%m/%Y')
 
 				try:
 					Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.device (" \
@@ -94,7 +95,7 @@ class Upload(object):
 					print("\tTemperature: {0}C\tPressure: {1}Mb\tHumidity: {2}%\n\n".format(Temperature, Pressure, Humidity))
 			except Exception as e:
 				raise
-			time.sleep(interval)
+			sleep(interval)
 
 	def pushMovementReadings(self, interval = 1, print_results = True):
 		import time
