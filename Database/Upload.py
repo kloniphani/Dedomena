@@ -2,7 +2,7 @@ from Connection import *
 
 
 class Upload(object):
-	"""description of class"""
+    """description of class"""
 	from sense_hat import SenseHat
 	import os, pyrebase, pubnub, sys, time, datetime;
 
@@ -55,14 +55,14 @@ class Upload(object):
 				try:
 					print("+++++++++++DEVICE")
 					Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.device (" \
-							"macAddress STRING, " \
-							"manufacturer STRING, " \
-							"model STRING, " \
-							"ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
+                            "macAddress STRING, " \
+                            "manufacturer STRING, " \
+                            "model STRING, " \
+                            "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
 					self.IMPALA_CONNECTION.Execute(Query)
 
 					Query = "INSERT INTO dedomena.device (macAddress, manufacturer, model) VALUES({0}, {1}, {2});".format(self.MacAddress, 'Raspberry Pi', 'Model B+');
-					#self.IMPALA_CONNECTION.Execute(Query)
+					#self.IMPALA_CONNECTION.Execute(str(Query))
 				except:
 					print("!Could not insert a new record to the database \n\tError: {0}\n\t\t{1}\n\t\t{2}".format(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2]));
 

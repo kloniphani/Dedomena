@@ -32,12 +32,12 @@ class Connection(object):
 			try:
 				cursor = self.CONNECTION.cursor()
 				cursor.execute(Query)
-				if(Fetch.lower() == 'all'):
+				if(Fetch.lower() == 'all' and cursor != None):
 					return cursor.fetchall()
 				else:
 					return cursor.fetchone()
 			except:
 				print("Unexpected error on function: {0}\nClass:\t{1]\nDetails:\t{2}".format("Excute",exc_info()[0],exc_info()[1]))
-
 		else:
-			print("!Not connected to any database");													    
+			print("!Not connected to any database")
+		return None
