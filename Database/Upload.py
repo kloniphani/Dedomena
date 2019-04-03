@@ -44,6 +44,33 @@ class Upload(object):
 
         import sys
 
+        #Checking the table in Database
+        Query = "CREATE DATABASE IF NOT EXISTS dedomena COMMENT 'Database to store sensor reading' LOCATION '/test-warehouse/data/sensor';"
+        self.IMPALA_CONNECTION.Execute(Query)
+
+        Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.device (" \
+                "macAddress STRING, " \
+                "manufacturer STRING, " \
+                "model STRING)" \
+                "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
+        self.IMPALA_CONNECTION.Execute(Query)
+
+        Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.timestamp (" \
+                "date STRING, " \
+                "time STRING) " \
+                "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
+        self.IMPALA_CONNECTION.Execute(Query)
+
+        Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.device (" \
+                "timestamp STRING, " \
+                "deviceMacAddress STRING, " \
+                "pressure FLOAT, " \
+                "temperature FLOAT, " \
+                "humidity FLOAT) " \
+                "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
+        self.IMPALA_CONNECTION.Execute(Query)
+
+
         #Take readings from all three sensors and ound the values to one decimal place
         while(True):
             try:
@@ -55,32 +82,11 @@ class Upload(object):
                 time_sense = time.strftime('%H:%M:%S')
                 date_sense = time.strftime('%d/%m/%Y')
 
-                Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.device (" \
-                        "macAddress STRING, " \
-                        "manufacturer STRING, " \
-                        "model STRING)" \
-                        "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
-                self.IMPALA_CONNECTION.Execute(Query)
 
                 Query = "INSERT INTO dedomena.device (macAddress, manufacturer, model) VALUES({0}, {1}, {2});".format(self.MacAddress, 'Raspberry Pi', 'Model B');
                 self.IMPALA_CONNECTION.Execute(Query)
 
-                Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.timestamp (" \
-                        "date STRING, " \
-                        "time STRING) " \
-                        "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
-                #self.IMPALA_CONNECTION.Execute(Query)
-
                 Query = "INSERT INTO dedomena.device (date, time) VALUES({0}, {1});".format(date_sense, time_sense);
-                #self.IMPALA_CONNECTION.Execute(Query)
-
-                Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.device (" \
-                        "timestamp STRING, " \
-                        "deviceMacAddress STRING, " \
-                        "pressure FLOAT, " \
-                        "temperature FLOAT, "\
-                        "humidity FLOAT) " \
-                        "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
                 #self.IMPALA_CONNECTION.Execute(Query)
 
                 Query = "INSERT INTO dedomena.device (timestamp,deviceMacAddress, pressure, temperature, humidity) VALUES(0, {0}, {1}, {2}, {3});".format(self.MacAddress, Pressure, Temperature, Humidity);
