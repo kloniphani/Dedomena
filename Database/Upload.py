@@ -50,6 +50,7 @@ def pushEnvironmentalReadings(interval = 10, print_results = True):
     IMPALA_CONNECTION.Execute(Query)
 
     Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.device (" \
+            "id_timestamp STRING, " \
             "macAddress STRING, " \
             "manufacturer STRING, " \
             "model STRING)" \
@@ -57,6 +58,7 @@ def pushEnvironmentalReadings(interval = 10, print_results = True):
     IMPALA_CONNECTION.Execute(Query)
 
     Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.timestamp (" \
+            "id_timestamp STRING, " \
             "date STRING, " \
             "time STRING) " \
             "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
@@ -82,8 +84,9 @@ def pushEnvironmentalReadings(interval = 10, print_results = True):
             time = datetime.now()
             time_sense = time.strftime('%H:%M:%S')
             date_sense = time.strftime('%d/%m/%Y')
+            stamp = date_sense + ' ' + time_sense
 
-            Query = "INSERT INTO dedomena.device (macAddress, manufacturer, model) VALUES('{0}', '{1}', '{2}');".format(MacAddress, 'Raspberry Pi', 'Model B+');
+            Query = "INSERT INTO dedomena.device (id_timestamp, macAddress, manufacturer, model) VALUES('{0}', '{1}', '{2}', '{3}');".format(stamp, MacAddress, 'Raspberry Pi', 'Model B+');
             IMPALA_CONNECTION.Execute(Query)
 
             Query = "INSERT INTO dedomena.device (date, time) VALUES({0}, {1});".format(date_sense, time_sense);
@@ -110,6 +113,7 @@ def pushMovementReadings(interval = 1, print_results = True):
     IMPALA_CONNECTION.Execute(Query)
 
     Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.acceleration (" \
+            "id_timestamp STRING, " \
             "deviceMacAddress STRING, " \
             "x FLOAT, " \
             "y FLOAT, " \
@@ -118,6 +122,7 @@ def pushMovementReadings(interval = 1, print_results = True):
     IMPALA_CONNECTION.Execute(Query)
 
     Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.orientation (" \
+            "id_timestamp STRING, " \
             "deviceMacAddress STRING, " \
             "pitch FLOAT, " \
             "roll FLOAT, " \
@@ -226,11 +231,11 @@ if __name__ == '__main__':
     c = Process(target=pushEnvironmentalReadings)
     c.start()
     
-    #d = Process(target=pushMovementReadings)
-    #d.start()
+    d = Process(target=pushMovementReadings)
+    d.start()
     
     a.join()
     b.join()
     c.join
-    #d.join
+    d.join
 
