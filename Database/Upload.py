@@ -60,6 +60,7 @@ class Upload(object):
                             "model STRING, " \
                             "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
                     self.IMPALA_CONNECTION.Execute(Query)
+                    print("___________DEVICE")
 
                     Query = "INSERT INTO dedomena.device (macAddress, manufacturer, model) VALUES({0}, {1}, {2});".format(self.MacAddress, 'Raspberry Pi', 'Model B+');
                     #self.IMPALA_CONNECTION.Execute(str(Query))
