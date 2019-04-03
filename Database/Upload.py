@@ -64,7 +64,7 @@ def pushEnvironmentalReadings(interval = 10, print_results = True):
             "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
     IMPALA_CONNECTION.Execute(Query)
 
-    Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.device (" \
+    Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.sensor (" \
             "id_timestamp STRING, " \
             "deviceMacAddress STRING, " \
             "pressure FLOAT, " \
@@ -72,7 +72,7 @@ def pushEnvironmentalReadings(interval = 10, print_results = True):
             "humidity FLOAT) " \
             "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
     IMPALA_CONNECTION.Execute(Query)
-
+    sleep(10)
 
     #Take readings from all three sensors and ound the values to one decimal place
     while(True):
@@ -92,7 +92,7 @@ def pushEnvironmentalReadings(interval = 10, print_results = True):
             Query = "INSERT INTO dedomena.device (date, time) VALUES({0}, {1});".format(date_sense, time_sense);
             IMPALA_CONNECTION.Execute(Query)
 
-            Query = "INSERT INTO dedomena.device (timestamp,deviceMacAddress, pressure, temperature, humidity) VALUES('{0}', '{1}', {2}, {3}, {4});".format(time_sense, MacAddress, Pressure, Temperature, Humidity);
+            Query = "INSERT INTO dedomena.device (id_timestamp, deviceMacAddress, pressure, temperature, humidity) VALUES('{0}', '{1}', {2}, {3}, {4});".format(stamp, MacAddress, Pressure, Temperature, Humidity);
             IMPALA_CONNECTION.Execute(Query)
 
             if print_results == True:
@@ -129,6 +129,7 @@ def pushMovementReadings(interval = 1, print_results = True):
             "yaw FLOAT) " \
             "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
     IMPALA_CONNECTION.Execute(Query)
+    time.sleep(10)
 
 
     while(True):
@@ -139,18 +140,20 @@ def pushMovementReadings(interval = 1, print_results = True):
 
             time_sense = time.strftime('%H:%M:%S')
             date_sense = time.strftime('%d/%m/%Y')
+            stamp = date_sense + ' ' + time_sense
 
             x = Acceleration['x']
             y = Acceleration['y']
             z = Acceleration['z']
+
             pitch = Orientation["pitch"]
             roll = Orientation["roll"]
             yaw = Orientation["yaw"]
 
-            Query = "INSERT INTO `dedomena.acceleration` (`macAddress`, `manufacturer`, `model`) VALUES('{0}', {1}, {2}, {3});".format(MacAddress, x, y, z);
+            Query = "INSERT INTO dedomena.acceleration (id_timestamp, macAddress, manufacturer, model) VALUES('{0}', '{1}', {2}, {3});".format(stamp, MacAddress, x, y, z);
             IMPALA_CONNECTION.Execute(Query)
 
-            Query = "INSERT INTO `dedomena.orientation` (`macAddress`, `manufacturer`, `model`) VALUES('{0}', {1}, {2}, {3});".format(MacAddress, pitch, roll, yaw);
+            Query = "INSERT INTO dedomena.orientation (macAddress, manufacturer, model) VALUES('{0}', '{1}', {2}, {3});".format(stamp, MacAddress, pitch, roll, yaw);
             IMPALA_CONNECTION.Execute(Query)
 
             if print_results == True:
@@ -159,7 +162,7 @@ def pushMovementReadings(interval = 1, print_results = True):
                 print("\tPitch {0} Roll {1} Yaw {2}\n\n".format(pitch, roll, yaw))
         except Exception as e:
             raise
-        time.sleep(interval)
+        sleep(interval)
 
 
 def deviceState():
