@@ -11,7 +11,7 @@ class Connection(object):
 			self.CONNECTION = dbapi.connect(Daemon, Port)
 			print("+Successfully connected to: {0} with port: {1}\n\n".format(Daemon, Port))
 		except:
-			print("Unexpected error on function: {0}\nClass:\t{1]\nDetails:\t{2}".format("Impala", exc_info()[0], exc_info()[1]))
+			print("Unexpected error on function: {0}\nClass:\t{1]\nDetails:\t{2}".format("Impala", exc_info()[0], exc_info()))
 
 		return self.CONNECTION;
 
@@ -23,23 +23,26 @@ class Connection(object):
 			self.CONNECTION = hive.connect(Server, Port)
 			print("+Successfully connected to: {0} with port: {1}\n\n".format(Server, Port))
 		except:
-			print("Unexpected error on function: {0}\nClass:\t{1]\nDetails:\t{2}".format("Hive", exc_info()[0], exc_info()[1]))
+			print("Unexpected error on function: {0}\nClass:\t{1]\nDetails:\t{2}".format("Hive", exc_info()[0], exc_info()))
 		
 		return self.CONNECTION;
 
-	def Execute(self, Query, Fetch = 'All'):
+	def Execute(self, Query, Fetch = 'None'):
 		from sys import exc_info;
 
 		if self.CONNECTION is not None:
 			try:
 				cursor = self.CONNECTION.cursor()
 				cursor.execute(Query)
-				if(Fetch.lower() == 'all' and cursor != None):
+
+				if(Fetch.lower() == 'None'):
+					return None
+				elif(Fetch.lower() == 'all' and cursor != None):
 					return cursor.fetchall()
 				else:
 					return cursor.fetchone()
 			except:
-				print("Unexpected error on function: {0}\nClass:\t{1]\nDetails:\t{2}".format("Excute",exc_info()[0],exc_info()[1]))
+				print("Unexpected error on function: {0}\nClass:\t{1]\nDetails:\t{2}".format("Excute", exc_info()[0], exc_info()))
 		else:
 			print("!Not connected to any database")
 		return None
