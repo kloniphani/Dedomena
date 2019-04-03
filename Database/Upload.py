@@ -56,14 +56,12 @@ class Upload(object):
                 date_sense = time.strftime('%d/%m/%Y')
 
                 try:
-                    print("+++++++++++DEVICE")
                     Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.device (" \
                             "macAddress STRING, " \
                             "manufacturer STRING, " \
-                            "model STRING, " \
+                            "model STRING) " \
                             "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
-                    print(self.IMPALA_CONNECTION.Execute("SHOW DATABASES"))
-                    print("___________DEVICE")
+                    self.IMPALA_CONNECTION.Execute(Query)
 
                     Query = "INSERT INTO dedomena.device (macAddress, manufacturer, model) VALUES({0}, {1}, {2});".format(self.MacAddress, 'Raspberry Pi', 'Model B+');
                     #self.IMPALA_CONNECTION.Execute(str(Query))
@@ -73,7 +71,7 @@ class Upload(object):
                 try:
                     Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.timestamp (" \
                             "date STRING, " \
-                            "time STRING, " \
+                            "time STRING) " \
                             "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
                     #self.IMPALA_CONNECTION.Execute(Query)
 
@@ -88,7 +86,7 @@ class Upload(object):
                             "deviceMacAddress STRING, " \
                             "pressure FLOAT, " \
                             "pressure temperature, "\
-                            "pressure humidity, " \
+                            "pressure humidity) " \
                             "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
                     #self.IMPALA_CONNECTION.Execute(Query)
 
@@ -129,7 +127,7 @@ class Upload(object):
                             "deviceMacAddress STRING, " \
                             "x FLOAT, " \
                             "y FLOAT, " \
-                            "z FLOAT, " \
+                            "z FLOAT)" \
                             "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
                     self.IMPALA_CONNECTION.Execute(Query)
 
@@ -143,7 +141,7 @@ class Upload(object):
                             "deviceMacAddress STRING, " \
                             "pitch FLOAT, " \
                             "roll FLOAT, " \
-                            "yaw FLOAT, " \
+                            "yaw FLOAT) " \
                             "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
                     self.IMPALA_CONNECTION.Execute(Query)
 
