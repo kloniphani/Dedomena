@@ -35,7 +35,7 @@ class Connection(object):
 				cursor = self.CONNECTION.cursor()
 				cursor.execute(Query)
 
-				if(Fetch.lower() == 'None'):
+				if(Fetch.lower() == 'none'):
 					return None
 				elif(Fetch.lower() == 'all' and cursor != None):
 					return cursor.fetchall()
