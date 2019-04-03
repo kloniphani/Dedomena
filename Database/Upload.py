@@ -55,45 +55,36 @@ class Upload(object):
                 time_sense = time.strftime('%H:%M:%S')
                 date_sense = time.strftime('%d/%m/%Y')
 
-                try:
-                    Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.device (" \
-                            "macAddress STRING, " \
-                            "manufacturer STRING, " \
-                            "model STRING)" \
-                            "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
-                    self.IMPALA_CONNECTION.Execute(Query)
+                Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.device (" \
+                        "macAddress STRING, " \
+                        "manufacturer STRING, " \
+                        "model STRING)" \
+                        "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
+                self.IMPALA_CONNECTION.Execute(Query)
 
-                    Query = "INSERT INTO dedomena.device (macAddress, manufacturer, model) VALUES({0}, {1}, {2});".format(self.MacAddress, 'Raspberry Pi', 'Model B+');
-                    #self.IMPALA_CONNECTION.Execute(str(Query))
-                except:
-                    print("!Could not insert a new record to the database \n\tError: {0}\n\t\t{1}\n\t\t{2}".format(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2]));
+                Query = "INSERT INTO dedomena.device (macAddress, manufacturer, model) VALUES({0}, {1}, {2});".format(self.MacAddress, 'Raspberry Pi', 'Model B+');
+                self.IMPALA_CONNECTION.Execute(Query)
 
-                try:
-                    Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.timestamp (" \
-                            "date STRING, " \
-                            "time STRING) " \
-                            "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
-                    #self.IMPALA_CONNECTION.Execute(Query)
+                Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.timestamp (" \
+                        "date STRING, " \
+                        "time STRING) " \
+                        "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
+                #self.IMPALA_CONNECTION.Execute(Query)
 
-                    Query = "INSERT INTO dedomena.device (date, time) VALUES({0}, {1});".format(date_sense, time_sense);
-                    #self.IMPALA_CONNECTION.Execute(Query)
-                except:
-                    print("!Could not insert a new record to the database \n\tError: {0}\n\t\t{1}\n\t\t{2}".format(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2]));
+                Query = "INSERT INTO dedomena.device (date, time) VALUES({0}, {1});".format(date_sense, time_sense);
+                #self.IMPALA_CONNECTION.Execute(Query)
 
-                try:
-                    Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.device (" \
-                            "timestamp STRING, " \
-                            "deviceMacAddress STRING, " \
-                            "pressure FLOAT, " \
-                            "pressure temperature, "\
-                            "pressure humidity) " \
-                            "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
-                    #self.IMPALA_CONNECTION.Execute(Query)
+                Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.device (" \
+                        "timestamp STRING, " \
+                        "deviceMacAddress STRING, " \
+                        "pressure FLOAT, " \
+                        "temperature FLOAT, "\
+                        "humidity FLOAT) " \
+                        "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
+                #self.IMPALA_CONNECTION.Execute(Query)
 
-                    Query = "INSERT INTO dedomena.device (timestamp,deviceMacAddress, pressure, temperature, humidity) VALUES(0, {0}, {1}, {2}, {3});".format(self.MacAddress, Pressure, Temperature, Humidity);
-                    #self.IMPALA_CONNECTION.Execute(Query)
-                except:
-                    print("!Could not insert a new record to the database \n\tError: {0}\n\t\t{1}\n\t\t{2}".format(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2]));
+                Query = "INSERT INTO dedomena.device (timestamp,deviceMacAddress, pressure, temperature, humidity) VALUES(0, {0}, {1}, {2}, {3});".format(self.MacAddress, Pressure, Temperature, Humidity);
+                #self.IMPALA_CONNECTION.Execute(Query)
 
                 if print_results == True:
                     print("Time: {0}\tMacAddress: {1}".format(time_sense, self.MacAddress))
@@ -122,33 +113,27 @@ class Upload(object):
                 roll = Orientation["roll"]
                 yaw = Orientation["yaw"]
 
-                try:
-                    Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.acceleration (" \
-                            "deviceMacAddress STRING, " \
-                            "x FLOAT, " \
-                            "y FLOAT, " \
-                            "z FLOAT)" \
-                            "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
-                    self.IMPALA_CONNECTION.Execute(Query)
+                Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.acceleration (" \
+                        "deviceMacAddress STRING, " \
+                        "x FLOAT, " \
+                        "y FLOAT, " \
+                        "z FLOAT)" \
+                        "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
+                self.IMPALA_CONNECTION.Execute(Query)
 
-                    Query = "INSERT INTO `dedomena.acceleration` (`macAddress`, `manufacturer`, `model`) VALUES({0}, {1}, {2}, {3});".format(self.MacAddress, x, y, z);
-                    self.IMPALA_CONNECTION.Execute(Query)
-                except:
-                    print('!Could not insert a new record to the database \n\tError: {0}\n\t\t{1}\n\t\t{2}'.format(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2]));
+                Query = "INSERT INTO `dedomena.acceleration` (`macAddress`, `manufacturer`, `model`) VALUES({0}, {1}, {2}, {3});".format(self.MacAddress, x, y, z);
+                self.IMPALA_CONNECTION.Execute(Query)
 
-                try:
-                    Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.orientation (" \
-                            "deviceMacAddress STRING, " \
-                            "pitch FLOAT, " \
-                            "roll FLOAT, " \
-                            "yaw FLOAT) " \
-                            "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
-                    self.IMPALA_CONNECTION.Execute(Query)
+                Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.orientation (" \
+                        "deviceMacAddress STRING, " \
+                        "pitch FLOAT, " \
+                        "roll FLOAT, " \
+                        "yaw FLOAT) " \
+                        "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
+                self.IMPALA_CONNECTION.Execute(Query)
 
-                    Query = "INSERT INTO `dedomena.orientation` (`macAddress`, `manufacturer`, `model`) VALUES({0}, {1}, {2}, {3});".format(self.MacAddress, pitch, roll, yaw);
-                    self.IMPALA_CONNECTION.Execute(Query)
-                except:
-                    print('!Could not insert a new record to the database \n\tError: {0}\n\t\t{1}\n\t\t{2}'.format(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2]));
+                Query = "INSERT INTO `dedomena.orientation` (`macAddress`, `manufacturer`, `model`) VALUES({0}, {1}, {2}, {3});".format(self.MacAddress, pitch, roll, yaw);
+                self.IMPALA_CONNECTION.Execute(Query)
 
                 if print_results == True:
                     print("Time: {0}\tMacAddress: {1}".format(time_sense, self.MacAddress))
