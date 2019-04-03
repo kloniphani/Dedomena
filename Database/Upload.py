@@ -42,9 +42,7 @@ class Upload(object):
         from time import sleep
         from datetime import datetime
 
-        import sys
-
-        #Checking the table in Database
+        #Checking the Tables and Database in the server
         Query = "CREATE DATABASE IF NOT EXISTS dedomena COMMENT 'Database to store sensor reading' LOCATION '/test-warehouse/data/sensor';"
         self.IMPALA_CONNECTION.Execute(Query)
 
@@ -83,13 +81,13 @@ class Upload(object):
                 date_sense = time.strftime('%d/%m/%Y')
 
 
-                Query = "INSERT INTO dedomena.device (macAddress, manufacturer, model) VALUES({0}, {1}, {2});".format(self.MacAddress, 'Raspberry Pi', 'Model B');
+                Query = "INSERT INTO dedomena.device (macAddress, manufacturer, model) VALUES('{0}', '{1}', '{2}');".format(self.MacAddress, 'Raspberry Pi', 'Model B+');
                 self.IMPALA_CONNECTION.Execute(Query)
 
                 Query = "INSERT INTO dedomena.device (date, time) VALUES({0}, {1});".format(date_sense, time_sense);
                 #self.IMPALA_CONNECTION.Execute(Query)
 
-                Query = "INSERT INTO dedomena.device (timestamp,deviceMacAddress, pressure, temperature, humidity) VALUES(0, {0}, {1}, {2}, {3});".format(self.MacAddress, Pressure, Temperature, Humidity);
+                Query = "INSERT INTO dedomena.device (timestamp,deviceMacAddress, pressure, temperature, humidity) VALUES('{0}', '{1}', {2}, {3}, {4});".format(time_sense, self.MacAddress, Pressure, Temperature, Humidity);
                 #self.IMPALA_CONNECTION.Execute(Query)
 
                 if print_results == True:
@@ -102,6 +100,27 @@ class Upload(object):
     def pushMovementReadings(self, interval = 1, print_results = True):
         import time
 
+        # Checking the Tables and Database in the server
+        Query = "CREATE DATABASE IF NOT EXISTS dedomena COMMENT 'Database to store sensor reading' LOCATION '/test-warehouse/data/sensor';"
+        self.IMPALA_CONNECTION.Execute(Query)
+
+        Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.acceleration (" \
+                "deviceMacAddress STRING, " \
+                "x FLOAT, " \
+                "y FLOAT, " \
+                "z FLOAT)" \
+                "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
+        self.IMPALA_CONNECTION.Execute(Query)
+
+        Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.orientation (" \
+                "deviceMacAddress STRING, " \
+                "pitch FLOAT, " \
+                "roll FLOAT, " \
+                "yaw FLOAT) " \
+                "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
+        self.IMPALA_CONNECTION.Execute(Query)
+
+
         while(True):
             try:
                 Acceleration = self.SENSE.get_accelerometer_raw()
@@ -110,7 +129,6 @@ class Upload(object):
 
                 time_sense = self.time.strftime('%H:%M:%S')
                 date_sense = self.time.strftime('%d/%m/%Y')
-                data = {"MAC": self.MacAddress, "Date": date_sense, "Time": time_sense, "Acceleration": Acceleration, "Orientation": Orientation, "Compass": north}
 
                 x = Acceleration['x']
                 y = Acceleration['y']
@@ -119,26 +137,10 @@ class Upload(object):
                 roll = Orientation["roll"]
                 yaw = Orientation["yaw"]
 
-                Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.acceleration (" \
-                        "deviceMacAddress STRING, " \
-                        "x FLOAT, " \
-                        "y FLOAT, " \
-                        "z FLOAT)" \
-                        "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
+                Query = "INSERT INTO `dedomena.acceleration` (`macAddress`, `manufacturer`, `model`) VALUES('{0}', {1}, {2}, {3});".format(self.MacAddress, x, y, z);
                 self.IMPALA_CONNECTION.Execute(Query)
 
-                Query = "INSERT INTO `dedomena.acceleration` (`macAddress`, `manufacturer`, `model`) VALUES({0}, {1}, {2}, {3});".format(self.MacAddress, x, y, z);
-                self.IMPALA_CONNECTION.Execute(Query)
-
-                Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.orientation (" \
-                        "deviceMacAddress STRING, " \
-                        "pitch FLOAT, " \
-                        "roll FLOAT, " \
-                        "yaw FLOAT) " \
-                        "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
-                self.IMPALA_CONNECTION.Execute(Query)
-
-                Query = "INSERT INTO `dedomena.orientation` (`macAddress`, `manufacturer`, `model`) VALUES({0}, {1}, {2}, {3});".format(self.MacAddress, pitch, roll, yaw);
+                Query = "INSERT INTO `dedomena.orientation` (`macAddress`, `manufacturer`, `model`) VALUES('{0}', {1}, {2}, {3});".format(self.MacAddress, pitch, roll, yaw);
                 self.IMPALA_CONNECTION.Execute(Query)
 
                 if print_results == True:
