@@ -53,11 +53,7 @@ class Upload(object):
 				date_sense = time.strftime('%d/%m/%Y')
 
 				try:
-					Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.device (" \
-							"macAddress STRING, " \
-							"manufacturer STRING, " \
-							"model STRING, " \
-							"ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
+					Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.device (macAddress STRING, manufacturer STRING, model STRING, ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
 					self.IMPALA_CONNECTION.Execute(Query)
 					print("---------------------------------------------")
 
