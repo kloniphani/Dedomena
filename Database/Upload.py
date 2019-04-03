@@ -214,20 +214,20 @@ def joysticMovements():
 if __name__ == '__main__':
     from multiprocessing import Process
 
-    uploadToImpala = Upload()
-    uploadToImpala.connectToImpala('172.21.5.201', 21050)
+
+    connectToImpala('172.21.5.201', 21050)
     #uploadToImpala.pushEnvironmentalReadings()
 
-    a = Process(target=uploadToImpala.joysticMovements)
+    a = Process(target=joysticMovements)
     a.start()
     
-    b = Process(target=uploadToImpala.deviceState)
+    b = Process(target=deviceState)
     b.start()
     
-    c = Process(target=uploadToImpala.pushEnvironmentalReadings)
+    c = Process(target=pushEnvironmentalReadings)
     c.start()
     
-    d = Process(target=uploadToImpala.pushMovementReadings)
+    d = Process(target=pushMovementReadings)
     d.start()
     
     a.join()
