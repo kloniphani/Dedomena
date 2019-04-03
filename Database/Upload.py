@@ -39,6 +39,8 @@ class Upload(object):
 		from time import sleep
 		from datetime import datetime
 
+        import sys
+
 		#Take readings from all three sensors and ound the values to one decimal place
 		while(True):
 			try:
@@ -58,7 +60,7 @@ class Upload(object):
 							"ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
 					self.IMPALA_CONNECTION.Execute(Query)
 
-					Query = "INSERT INTO `dedomena.device` (`macAddress`, `manufacturer`, `model`) VALUES({0}, {1}, {2});".format(self.MacAddress, 'Raspberry Pi', 'Model B+');
+					Query = "INSERT INTO dedomena.device (macAddress, manufacturer, model) VALUES({0}, {1}, {2});".format(self.MacAddress, 'Raspberry Pi', 'Model B+');
 					self.IMPALA_CONNECTION.Execute(Query)
 				except:
 					print('!Could not insert a new record to the database \n\tError: {0}\n\t\t{1}\n\t\t{2}'.format(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2]));
@@ -70,7 +72,7 @@ class Upload(object):
 							"ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
 					self.IMPALA_CONNECTION.Execute(Query)
 
-					Query = "INSERT INTO `dedomena.device` (`date`, `time`) VALUES({0}, {1});".format(date_sense, time_sense);
+					Query = "INSERT INTO dedomena.device (date, time) VALUES({0}, {1});".format(date_sense, time_sense);
 					self.IMPALA_CONNECTION.Execute(Query)
 				except:
 					print('!Could not insert a new record to the database \n\tError: {0}\n\t\t{1}\n\t\t{2}'.format(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2]));
@@ -85,7 +87,7 @@ class Upload(object):
 							"ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
 					self.IMPALA_CONNECTION.Execute(Query)
 
-					Query = "INSERT INTO `dedomena.device` (`timestamp`,`deviceMacAddress`, `pressure`, `temperature`, `humidity`) VALUES(0, {0}, {1}, {2}, {3});".format(self.MacAddress, Pressure, Temperature, Humidity);
+					Query = "INSERT INTO dedomena.device (timestamp,deviceMacAddress, pressure, temperature, humidity) VALUES(0, {0}, {1}, {2}, {3});".format(self.MacAddress, Pressure, Temperature, Humidity);
 					self.IMPALA_CONNECTION.Execute(Query)
 				except:
 					print('!Could not insert a new record to the database \n\tError: {0}\n\t\t{1}\n\t\t{2}'.format(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2]));
