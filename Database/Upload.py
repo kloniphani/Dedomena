@@ -150,10 +150,10 @@ def pushMovementReadings(interval = 1, print_results = True):
             roll = Orientation["roll"]
             yaw = Orientation["yaw"]
 
-            Query = "INSERT INTO dedomena.acceleration (id_timestamp, macAddress, manufacturer, model) VALUES('{0}', '{1}', {2}, {3});".format(stamp, MacAddress, x, y, z);
+            Query = "INSERT INTO dedomena.acceleration (id_timestamp, deviceMacAddress, x, y, z) VALUES('{0}', '{1}', {2}, {3});".format(stamp, MacAddress, x, y, z);
             IMPALA_CONNECTION.Execute(Query)
 
-            Query = "INSERT INTO dedomena.orientation (id_timestamp, macAddress, manufacturer, model) VALUES('{0}', '{1}', {2}, {3});".format(stamp, MacAddress, pitch, roll, yaw);
+            Query = "INSERT INTO dedomena.orientation (id_timestamp, deviceMacAddress, pitch, roll, yaw) VALUES('{0}', '{1}', {2}, {3});".format(stamp, MacAddress, pitch, roll, yaw);
             IMPALA_CONNECTION.Execute(Query)
 
             if print_results == True:
