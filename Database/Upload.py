@@ -109,7 +109,8 @@ def pushSensorReadings(interval = 10, print_results = True):
                 print("\tPitch: {0}\tRoll: {1}\tYaw: {2}\n\n".format(round(pitch, 4), round(roll, 4), round(yaw, 4)))
         except Exception as e:
             raise
-        sleep(interval)
+        finally:
+            sleep(interval)
 
 
 def deviceState():
