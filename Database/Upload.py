@@ -53,7 +53,7 @@ def connectToImpala(Daemon, Port = 21050):
             "pressure FLOAT, " \
             "temperature FLOAT, " \
             "humidity FLOAT," \
-            "magnetometer, FLOAT" \
+            "magnetometer FLOAT," \
             "x FLOAT, " \
             "y FLOAT, " \
             "z FLOAT, " \
@@ -100,7 +100,7 @@ def pushSensorReadings(interval = 10, print_results = True):
 
             Query = "LOCK TABLES dedomena.sensor WRITE;" \
                     "INSERT INTO dedomena.sensor (macAddress, manufacturer, model, date, time, pressure, temperature, humidity, magnetometer, x, y, z, pitch, roll, yaw) " \
-                    "VALUES({0}, {1}, {2}, {3});" \
+                    "VALUES('{0}', '{1}', '{2}', '{3}', '{4}', {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13});" \
                     "UNLOCK TABLES dedomena.sensor;".format(MacAddress, 'Raspberry Pi', 'Model B+', date_sense, time_sense, Pressure, Temperature, Humidity, north, x, y, z, pitch, roll, yaw)
             IMPALA_CONNECTION.Execute(Query)
 
