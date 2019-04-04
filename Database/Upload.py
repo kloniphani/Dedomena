@@ -45,7 +45,6 @@ def connectToImpala(Daemon, Port = 21050):
     sleep(5)
 
     Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.sensor (" \
-            "id_sensor int NOT NULL AUTO_INCREMENT" \
             "macAddress STRING, " \
             "manufacturer STRING, " \
             "model STRING," \
