@@ -143,13 +143,12 @@ def deviceState():
 def joysticMovements():
     import time
 
-    MessageSpeed = 0.05; ValueSpeed = 0.05
+    MessageSpeed = 0.05; ValueSpeed = 0.1
     TextColour = COLOR['orange'];
     while True:
         for event in SENSE.stick.get_events():
             # Check if the joystick was pressed
             if event.action == "pressed":
-
                 # Check which direction
                 if event.direction == "up":
                     #SENSE.show_message("Temperature", text_colour=TextColour, scroll_speed=MessageSpeed)
