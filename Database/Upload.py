@@ -39,42 +39,87 @@ def connectToImpala(Daemon, Port = 21050):
     return IMPALA_CONNECTION
 
 
-def pushEnvironmentalReadings(interval = 10, print_results = True):
-    from time import sleep
-    from datetime import datetime
+def checkDatabase(Server):
+    IMPALA_CONNECTION = connectToImpala(Server)
 
-    IMPALA_CONNECTION = connectToImpala('172.21.5.201')
+    # Checking the Tables and Database in the server
+    Query = "CREATE DATABASE IF NOT EXISTS dedomena COMMENT 'Database to store sensor reading' LOCATION '/test-warehouse/data/sensor';"
+    IMPALA_CONNECTION.Execute(Query)
 
-    #Checking the Tables and Database in the server
+    Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.sensor (" \
+            "id_sensor int NOT NULL AUTO_INCREMENT" \
+            "macAddress STRING, " \
+            "pressure FLOAT, " \
+            "temperature FLOAT, " \
+            "humidity FLOAT," \
+            "magnetometer, FLOAT" \
+            "timestamp INT, " \
+            "acceleration INT," \
+            "gyroscope INT," \
+            "PRIMARY KEY (id_sensor), " \
+            "KEY sensorTimestamp (timestamp), " \
+            "KEY sensorDevice (macAddress), " \
+            "KEY sensorAcceleration (acceleration), " \
+            "KEY sensorGyroscope (gyroscope), " \
+            "CONSTRAINT sensorTimestamp FOREIGN KEY (timestamp) REFERENCES dedomena.timestamp (id_timestamp), " \
+            "CONSTRAINT sensorDevice FOREIGN KEY (macAddress) REFERENCES dedomena.device  (id_device ), " \
+            "CONSTRAINT sensorAcceleration FOREIGN KEY (acceleration) REFERENCES dedomena.acceleration (id_acceleration), " \
+            "CONSTRAINT sensorGyroscope FOREIGN KEY (gyroscope) REFERENCES dedomena.gyroscope (id_gyroscope))" \
+            "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
+    IMPALA_CONNECTION.Execute(Query)
+
     Query = "CREATE DATABASE IF NOT EXISTS dedomena COMMENT 'Database to store sensor reading' LOCATION '/test-warehouse/data/sensor';"
     IMPALA_CONNECTION.Execute(Query)
 
     Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.device (" \
-            "id_timestamp STRING, " \
+            "id_device int NOT NULL AUTO_INCREMENT" \
             "macAddress STRING, " \
             "manufacturer STRING, " \
-            "model STRING)" \
+            "model STRING," \
+            "firmware STRING, " \
+            "platform STRING, " \
+            "PRIMARY KEY (id_device, macAddress))" \
             "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
     IMPALA_CONNECTION.Execute(Query)
 
     Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.timestamp (" \
-            "id_timestamp STRING, " \
+            "id_timestamp int NOT NULL AUTO_INCREMENT" \
+            "stamp STRING, " \
             "date STRING, " \
-            "time STRING) " \
+            "time STRING, " \
+            "zone STRING, " \
+            "PRIMARY KEY (timestamp)) " \
             "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
     IMPALA_CONNECTION.Execute(Query)
 
-    Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.sensor (" \
-            "id_timestamp STRING, " \
-            "deviceMacAddress STRING, " \
-            "pressure FLOAT, " \
-            "temperature FLOAT, " \
-            "humidity FLOAT) " \
+    Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.acceleration (" \
+            "id_acceleration int NOT NULL AUTO_INCREMENT" \
+            "x FLOAT, " \
+            "y FLOAT, " \
+            "z FLOAT" \
+            "PRIMARY KEY (id_acceleration))" \
             "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
     IMPALA_CONNECTION.Execute(Query)
-    sleep(10)
+
+    Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.gyroscope (" \
+            "id_gyroscope int NOT NULL AUTO_INCREMENT" \
+            "pitch FLOAT, " \
+            "roll FLOAT, " \
+            "yaw FLOAT" \
+            "PRIMARY KEY (id_orientation)) " \
+            "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
+    IMPALA_CONNECTION.Execute(Query)
+
+
+def pushSensorReadings(interval = 10, print_results = True):
+    from time import sleep
+    from datetime import datetime
+
+    SERVER = '172.21.5.201'
+    checkDatabase(SERVER)
 
     #Take readings from all three sensors and ound the values to one decimal place
+    IMPALA_CONNECTION = connectToImpala(SERVER)
     while(True):
         try:
             Temperature = SENSE.get_temperature()
@@ -86,61 +131,9 @@ def pushEnvironmentalReadings(interval = 10, print_results = True):
             date_sense = time.strftime('%d/%m/%Y')
             stamp = date_sense + ' ' + time_sense
 
-            Query = "INSERT INTO dedomena.device (id_timestamp, macAddress, manufacturer, model) VALUES('{0}', '{1}', '{2}', '{3}');".format(stamp, MacAddress, 'Raspberry Pi', 'Model B+');
-            IMPALA_CONNECTION.Execute(Query)
-
-            Query = "INSERT INTO dedomena.timestamp (date, time) VALUES({0}, {1});".format(date_sense, time_sense);
-            IMPALA_CONNECTION.Execute(Query)
-
-            Query = "INSERT INTO dedomena.sensor (id_timestamp, deviceMacAddress, pressure, temperature, humidity) VALUES('{0}', '{1}', {2}, {3}, {4});".format(stamp, MacAddress, Pressure, Temperature, Humidity);
-            IMPALA_CONNECTION.Execute(Query)
-
-            if print_results == True:
-                print("Time: {0}\tMacAddress: {1}".format(time_sense, MacAddress))
-                print("\tTemperature: {0}C\tPressure: {1}Mb\tHumidity: {2}%\n\n".format(Temperature, Pressure, Humidity))
-        except Exception as e:
-            raise
-        sleep(interval)
-
-
-def pushMovementReadings(interval = 1, print_results = True):
-    import time
-
-    IMPALA_CONNECTION = connectToImpala('172.21.5.201')
-
-    # Checking the Tables and Database in the server
-    Query = "CREATE DATABASE IF NOT EXISTS dedomena COMMENT 'Database to store sensor reading' LOCATION '/test-warehouse/data/sensor';"
-    IMPALA_CONNECTION.Execute(Query)
-
-    Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.acceleration (" \
-            "id_timestamp STRING, " \
-            "deviceMacAddress STRING, " \
-            "x FLOAT, " \
-            "y FLOAT, " \
-            "z FLOAT)" \
-            "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
-    IMPALA_CONNECTION.Execute(Query)
-
-    Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.orientation (" \
-            "id_timestamp STRING, " \
-            "deviceMacAddress STRING, " \
-            "pitch FLOAT, " \
-            "roll FLOAT, " \
-            "yaw FLOAT) " \
-            "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
-    IMPALA_CONNECTION.Execute(Query)
-    time.sleep(10)
-
-
-    while(True):
-        try:
             Acceleration = SENSE.get_accelerometer_raw()
             Orientation = SENSE.get_orientation()
             north = SENSE.get_compass()
-
-            time_sense = time.strftime('%H:%M:%S')
-            date_sense = time.strftime('%d/%m/%Y')
-            stamp = date_sense + ' ' + time_sense
 
             x = Acceleration['x']
             y = Acceleration['y']
@@ -150,14 +143,39 @@ def pushMovementReadings(interval = 1, print_results = True):
             roll = Orientation["roll"]
             yaw = Orientation["yaw"]
 
-            Query = "INSERT INTO dedomena.acceleration (id_timestamp, deviceMacAddress, x, y, z) VALUES('{0}', '{1}', {2}, {3}, {4});".format(stamp, MacAddress, x, y, z);
+            Query = "LOCK TABLES dedomena.device WRITE;" \
+                    "INSERT INTO dedomena.device (macAddress, manufacturer, model) " \
+                    "VALUES('{0}', '{1}', '{2}');" \
+                    "UNLOCK TABLES dedomena.device;".format(MacAddress, 'Raspberry Pi', 'Model B+')
             IMPALA_CONNECTION.Execute(Query)
 
-            Query = "INSERT INTO dedomena.orientation (id_timestamp, deviceMacAddress, pitch, roll, yaw) VALUES('{0}', '{1}', {2}, {3}, {4});".format(stamp, MacAddress, pitch, roll, yaw);
+            Query = "LOCK TABLES dedomena.timestamp WRITE;" \
+                    "INSERT INTO dedomena.timestamp (date, time) " \
+                    "VALUES({0}, {1});" \
+                    "UNLOCK TABLES dedomena.timestamp;".format(date_sense, time_sense)
+            IMPALA_CONNECTION.Execute(Query)
+
+            Query = "LOCK TABLES dedomena.acceleration WRITE;" \
+                    "INSERT INTO dedomena.acceleration (x, y, z) " \
+                    "VALUES({0}, {1}, {2};" \
+                    "UNLOCK TABLES dedomena.acceleration;".format(x, y, z)
+            IMPALA_CONNECTION.Execute(Query)
+
+            Query = "LOCK TABLES dedomena.gyroscope WRITE;" \
+                    "INSERT INTO dedomena.gyroscope (pitch, roll, yaw) " \
+                    "VALUES({0}, {1}, {2});" \
+                    "UNLOCK TABLES dedomena.gyroscope;".format(pitch, roll, yaw)
+            IMPALA_CONNECTION.Execute(Query)
+
+            Query = "LOCK TABLES dedomena.sensor WRITE;" \
+                    "INSERT INTO dedomena.sensor (pressure, temperature, humidity, magnetometer) " \
+                    "VALUES({0}, {1}, {2}, {3});" \
+                    "UNLOCK TABLES dedomena.sensor;".format(Pressure, Temperature, Humidity, north)
             IMPALA_CONNECTION.Execute(Query)
 
             if print_results == True:
                 print("Time: {0}\tMacAddress: {1}".format(time_sense, MacAddress))
+                print("\tTemperature: {0}C\tPressure: {1}Mb\tHumidity: {2}%\n\n".format(Temperature, Pressure, Humidity))
                 print("\tX={0}, Y={1}, Z={2}".format(x, y, z))
                 print("\tPitch {0} Roll {1} Yaw {2}\n\n".format(pitch, roll, yaw))
         except Exception as e:
@@ -231,14 +249,10 @@ if __name__ == '__main__':
     b = Process(target=deviceState)
     b.start()
     
-    c = Process(target=pushEnvironmentalReadings)
+    c = Process(target=pushSensorReadings)
     c.start()
-    
-    d = Process(target=pushMovementReadings)
-    d.start()
     
     a.join()
     b.join()
-    c.join()
-    d.join()
+    c.join
 
