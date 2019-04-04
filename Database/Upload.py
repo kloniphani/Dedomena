@@ -152,16 +152,16 @@ def joysticMovements():
 
                 # Check which direction
                 if event.direction == "up":
-                    SENSE.show_message("Temperature", text_colour=TextColour, scroll_speed=MessageSpeed)
+                    #SENSE.show_message("Temperature", text_colour=TextColour, scroll_speed=MessageSpeed)
                     SENSE.show_message("{0}C".format(round(SENSE.get_temperature(), 1)), text_colour=TextColour, scroll_speed=ValueSpeed)
                 elif event.direction == "down":
-                    SENSE.show_message("Pressure", text_colour=TextColour, scroll_speed=MessageSpeed)
+                    #SENSE.show_message("Pressure", text_colour=TextColour, scroll_speed=MessageSpeed)
                     SENSE.show_message("{0}Mb".format(round(SENSE.get_pressure(), 1)), text_colour=TextColour, scroll_speed=ValueSpeed)
                 elif event.direction == "left":
-                    SENSE.show_message("Humidity", text_colour=TextColour, scroll_speed=MessageSpeed)
+                    #SENSE.show_message("Humidity", text_colour=TextColour, scroll_speed=MessageSpeed)
                     SENSE.show_message("{0}%".format(round(SENSE.get_humidity(), 1)), text_colour=TextColour, scroll_speed=ValueSpeed)
                 elif event.direction == "right":
-                    SENSE.show_message("Compass", text_colour=TextColour, scroll_speed=MessageSpeed)
+                    #SENSE.show_message("Compass", text_colour=TextColour, scroll_speed=MessageSpeed)
                     SENSE.show_message("{0} N".format(round(SENSE.compass, 1)), text_colour=TextColour, scroll_speed=ValueSpeed)
                 elif event.direction == "middle":
                     SENSE.show_letter("!", text_colour=TextColour)
