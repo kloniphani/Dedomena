@@ -60,7 +60,8 @@ def connectToImpala(Daemon, Port = 21050):
             "z FLOAT, " \
             "pitch FLOAT, " \
             "roll FLOAT, " \
-            "yaw FLOAT" \
+            "yaw FLOAT) " \
+            "AUTO_INCREMENT=63 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci " \
             "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
     IMPALA_CONNECTION.Execute(Query)
     sleep(10)
