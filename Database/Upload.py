@@ -98,10 +98,8 @@ def pushSensorReadings(interval = 10, print_results = True):
             roll = Orientation["roll"]
             yaw = Orientation["yaw"]
 
-            Query = "LOCK TABLES dedomena.sensor WRITE;" \
-                    "INSERT INTO dedomena.sensor (macAddress, manufacturer, model, date_sense, time_sense, pressure, temperature, humidity, magnetometer, x, y, z, pitch, roll, yaw) " \
-                    "VALUES('{0}', '{1}', '{2}', '{3}', '{4}', {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13});" \
-                    "UNLOCK TABLES dedomena.sensor;".format(MacAddress, 'Raspberry Pi', 'Model B+', date_sense, time_sense, Pressure, Temperature, Humidity, north, x, y, z, pitch, roll, yaw)
+            Query = "INSERT INTO dedomena.sensor (macAddress, manufacturer, model, date_sense, time_sense, pressure, temperature, humidity, magnetometer, x, y, z, pitch, roll, yaw) " \
+                    "VALUES('{0}', '{1}', '{2}', '{3}', '{4}', {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13});".format(MacAddress, 'Raspberry Pi', 'Model B+', date_sense, time_sense, Pressure, Temperature, Humidity, north, x, y, z, pitch, roll, yaw)
             IMPALA_CONNECTION.Execute(Query)
 
             if print_results == True:
