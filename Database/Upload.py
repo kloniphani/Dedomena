@@ -48,8 +48,8 @@ def connectToImpala(Daemon, Port = 21050):
             "macAddress STRING, " \
             "manufacturer STRING, " \
             "model STRING, " \
-            "date STRING, " \
-            "time STRING, " \
+            "date_sense STRING, " \
+            "time_sense STRING, " \
             "pressure FLOAT, " \
             "temperature FLOAT, " \
             "humidity FLOAT, " \
@@ -99,16 +99,16 @@ def pushSensorReadings(interval = 10, print_results = True):
             yaw = Orientation["yaw"]
 
             Query = "LOCK TABLES dedomena.sensor WRITE;" \
-                    "INSERT INTO dedomena.sensor (macAddress, manufacturer, model, date, time, pressure, temperature, humidity, magnetometer, x, y, z, pitch, roll, yaw) " \
+                    "INSERT INTO dedomena.sensor (macAddress, manufacturer, model, date_sense, time_sense, pressure, temperature, humidity, magnetometer, x, y, z, pitch, roll, yaw) " \
                     "VALUES('{0}', '{1}', '{2}', '{3}', '{4}', {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13});" \
                     "UNLOCK TABLES dedomena.sensor;".format(MacAddress, 'Raspberry Pi', 'Model B+', date_sense, time_sense, Pressure, Temperature, Humidity, north, x, y, z, pitch, roll, yaw)
             IMPALA_CONNECTION.Execute(Query)
 
             if print_results == True:
                 print("Time: {0}\tMacAddress: {1}".format(time_sense, MacAddress))
-                print("\tTemperature: {0}C\tPressure: {1}Mb\tHumidity: {2}%\n\n".format(Temperature, Pressure, Humidity))
-                print("\tX={0}, Y={1}, Z={2}".format(x, y, z))
-                print("\tPitch {0} Roll {1} Yaw {2}\n\n".format(pitch, roll, yaw))
+                print("\tTemperature: {0}C\tPressure: {1}Mb\tHumidity: {2}%\n\n".format(round(Temperature, 2), round(Pressure, 2), round(Humidity, 2)))
+                print("\tX={0}, Y={1}, Z={2}".format(round(x, 4), round(y, 4), round(z, 4)))
+                print("\tPitch {0} Roll {1} Yaw {2}\n\n".format(round(pitch, 4), round(roll, 4), round(yaw, 4)))
         except Exception as e:
             raise
         sleep(interval)
