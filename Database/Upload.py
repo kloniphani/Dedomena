@@ -47,13 +47,13 @@ def connectToImpala(Daemon, Port = 21050):
     Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.sensor (" \
             "macAddress STRING, " \
             "manufacturer STRING, " \
-            "model STRING," \
+            "model STRING, " \
             "date STRING, " \
             "time STRING, " \
             "pressure FLOAT, " \
             "temperature FLOAT, " \
-            "humidity FLOAT," \
-            "magnetometer FLOAT," \
+            "humidity FLOAT, " \
+            "magnetometer FLOAT, " \
             "x FLOAT, " \
             "y FLOAT, " \
             "z FLOAT, " \
