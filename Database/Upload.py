@@ -106,9 +106,9 @@ def pushSensorReadings(interval = 10, print_results = True):
 
             if print_results == True:
                 print("Time: {0}\tMacAddress: {1}".format(time_sense, MacAddress))
-                print("\tTemperature: {0}C\tPressure: {1}Mb\tHumidity: {2}%\n\n".format(round(Temperature, 2), round(Pressure, 2), round(Humidity, 2)))
-                print("\tX={0}, Y={1}, Z={2}".format(round(x, 4), round(y, 4), round(z, 4)))
-                print("\tPitch {0} Roll {1} Yaw {2}\n\n".format(round(pitch, 4), round(roll, 4), round(yaw, 4)))
+                print("\tTemperature: {0}C\tPressure: {1}Mb\tHumidity: {2}%".format(round(Temperature, 2), round(Pressure, 2), round(Humidity, 2)))
+                print("\tX: {0},\tY:{1},\tZ:{2}".format(round(x, 4), round(y, 4), round(z, 4)))
+                print("\tPitch: {0}\tRoll: {1}\tYaw: {2}\n\n".format(round(pitch, 4), round(roll, 4), round(yaw, 4)))
         except Exception as e:
             raise
         sleep(interval)
