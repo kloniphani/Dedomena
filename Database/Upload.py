@@ -33,82 +33,40 @@ COLOR = {
 
 
 def connectToImpala(Daemon, Port = 21050):
+    from time import sleep
+
     # Connecting to Impala database in Cloudera
     IMPALA_CONNECTION = Connection();
     IMPALA_CONNECTION.Impala(Daemon, Port)
-    return IMPALA_CONNECTION
 
-
-def checkDatabase(Server):
-    IMPALA_CONNECTION = connectToImpala(Server)
-
-    # Checking the Tables and Database in the server
+    #Checking if the Database and Table exist
     Query = "CREATE DATABASE IF NOT EXISTS dedomena COMMENT 'Database to store sensor reading' LOCATION '/test-warehouse/data/sensor';"
     IMPALA_CONNECTION.Execute(Query)
+    sleep(5)
 
     Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.sensor (" \
             "id_sensor int NOT NULL AUTO_INCREMENT" \
             "macAddress STRING, " \
+            "manufacturer STRING, " \
+            "model STRING," \
+            "date STRING, " \
+            "time STRING, " \
             "pressure FLOAT, " \
             "temperature FLOAT, " \
             "humidity FLOAT," \
             "magnetometer, FLOAT" \
-            "timestamp INT, " \
-            "acceleration INT," \
-            "gyroscope INT," \
-            "PRIMARY KEY (id_sensor), " \
-            "KEY sensorTimestamp (timestamp), " \
-            "KEY sensorDevice (macAddress), " \
-            "KEY sensorAcceleration (acceleration), " \
-            "KEY sensorGyroscope (gyroscope), " \
-            "CONSTRAINT sensorTimestamp FOREIGN KEY (timestamp) REFERENCES dedomena.timestamp (id_timestamp), " \
-            "CONSTRAINT sensorDevice FOREIGN KEY (macAddress) REFERENCES dedomena.device  (id_device ), " \
-            "CONSTRAINT sensorAcceleration FOREIGN KEY (acceleration) REFERENCES dedomena.acceleration (id_acceleration), " \
-            "CONSTRAINT sensorGyroscope FOREIGN KEY (gyroscope) REFERENCES dedomena.gyroscope (id_gyroscope))" \
-            "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
-    IMPALA_CONNECTION.Execute(Query)
-
-    Query = "CREATE DATABASE IF NOT EXISTS dedomena COMMENT 'Database to store sensor reading' LOCATION '/test-warehouse/data/sensor';"
-    IMPALA_CONNECTION.Execute(Query)
-
-    Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.device (" \
-            "id_device int NOT NULL AUTO_INCREMENT" \
-            "macAddress STRING, " \
-            "manufacturer STRING, " \
-            "model STRING," \
-            "firmware STRING, " \
-            "platform STRING, " \
-            "PRIMARY KEY (id_device, macAddress))" \
-            "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
-    IMPALA_CONNECTION.Execute(Query)
-
-    Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.timestamp (" \
-            "id_timestamp int NOT NULL AUTO_INCREMENT" \
-            "stamp STRING, " \
-            "date STRING, " \
-            "time STRING, " \
-            "zone STRING, " \
-            "PRIMARY KEY (timestamp)) " \
-            "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
-    IMPALA_CONNECTION.Execute(Query)
-
-    Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.acceleration (" \
-            "id_acceleration int NOT NULL AUTO_INCREMENT" \
             "x FLOAT, " \
             "y FLOAT, " \
-            "z FLOAT" \
-            "PRIMARY KEY (id_acceleration))" \
-            "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
-    IMPALA_CONNECTION.Execute(Query)
-
-    Query = "CREATE EXTERNAL TABLE IF NOT EXISTS dedomena.gyroscope (" \
-            "id_gyroscope int NOT NULL AUTO_INCREMENT" \
+            "z FLOAT, " \
             "pitch FLOAT, " \
             "roll FLOAT, " \
             "yaw FLOAT" \
-            "PRIMARY KEY (id_orientation)) " \
             "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/test-warehouse/data/sensor';"
     IMPALA_CONNECTION.Execute(Query)
+    sleep(10)
+
+    return IMPALA_CONNECTION
+
 
 
 def pushSensorReadings(interval = 10, print_results = True):
@@ -116,7 +74,6 @@ def pushSensorReadings(interval = 10, print_results = True):
     from datetime import datetime
 
     SERVER = '172.21.5.201'
-    checkDatabase(SERVER)
 
     #Take readings from all three sensors and ound the values to one decimal place
     IMPALA_CONNECTION = connectToImpala(SERVER)
@@ -129,7 +86,6 @@ def pushSensorReadings(interval = 10, print_results = True):
             time = datetime.now()
             time_sense = time.strftime('%H:%M:%S')
             date_sense = time.strftime('%d/%m/%Y')
-            stamp = date_sense + ' ' + time_sense
 
             Acceleration = SENSE.get_accelerometer_raw()
             Orientation = SENSE.get_orientation()
@@ -143,34 +99,10 @@ def pushSensorReadings(interval = 10, print_results = True):
             roll = Orientation["roll"]
             yaw = Orientation["yaw"]
 
-            Query = "LOCK TABLES dedomena.device WRITE;" \
-                    "INSERT INTO dedomena.device (macAddress, manufacturer, model) " \
-                    "VALUES('{0}', '{1}', '{2}');" \
-                    "UNLOCK TABLES dedomena.device;".format(MacAddress, 'Raspberry Pi', 'Model B+')
-            IMPALA_CONNECTION.Execute(Query)
-
-            Query = "LOCK TABLES dedomena.timestamp WRITE;" \
-                    "INSERT INTO dedomena.timestamp (date, time) " \
-                    "VALUES({0}, {1});" \
-                    "UNLOCK TABLES dedomena.timestamp;".format(date_sense, time_sense)
-            IMPALA_CONNECTION.Execute(Query)
-
-            Query = "LOCK TABLES dedomena.acceleration WRITE;" \
-                    "INSERT INTO dedomena.acceleration (x, y, z) " \
-                    "VALUES({0}, {1}, {2};" \
-                    "UNLOCK TABLES dedomena.acceleration;".format(x, y, z)
-            IMPALA_CONNECTION.Execute(Query)
-
-            Query = "LOCK TABLES dedomena.gyroscope WRITE;" \
-                    "INSERT INTO dedomena.gyroscope (pitch, roll, yaw) " \
-                    "VALUES({0}, {1}, {2});" \
-                    "UNLOCK TABLES dedomena.gyroscope;".format(pitch, roll, yaw)
-            IMPALA_CONNECTION.Execute(Query)
-
             Query = "LOCK TABLES dedomena.sensor WRITE;" \
-                    "INSERT INTO dedomena.sensor (pressure, temperature, humidity, magnetometer) " \
+                    "INSERT INTO dedomena.sensor (macAddress, manufacturer, model, date, time, pressure, temperature, humidity, magnetometer, x, y, z, pitch, roll, yaw) " \
                     "VALUES({0}, {1}, {2}, {3});" \
-                    "UNLOCK TABLES dedomena.sensor;".format(Pressure, Temperature, Humidity, north)
+                    "UNLOCK TABLES dedomena.sensor;".format(MacAddress, 'Raspberry Pi', 'Model B+', date_sense, time_sense, Pressure, Temperature, Humidity, north, x, y, z, pitch, roll, yaw)
             IMPALA_CONNECTION.Execute(Query)
 
             if print_results == True:
