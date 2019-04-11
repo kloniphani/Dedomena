@@ -1,7 +1,5 @@
 from Connection import *
 
-
-
 """description of class"""
 from sense_hat import SenseHat
 import os, pyrebase, pubnub, sys, time, datetime;
@@ -72,7 +70,7 @@ def pushSensorReadings(interval = 10, print_results = True):
     from time import sleep
     from datetime import datetime
 
-    SERVER = '172.21.5.201'
+    SERVER = '172.16.240.126'
 
     #Take readings from all three sensors and ound the values to one decimal place
     IMPALA_CONNECTION = connectToImpala(SERVER)
@@ -168,7 +166,7 @@ def joysticMovements():
                 # Wait a while and then clear the screen
                 time.sleep(0.5)
 
-
+""""
 if __name__ == '__main__':
     from multiprocessing import Process
 
@@ -184,4 +182,6 @@ if __name__ == '__main__':
     a.join()
     b.join()
     c.join
+""""
 
+pushSensorReadings()
