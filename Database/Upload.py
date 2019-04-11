@@ -182,6 +182,6 @@ if __name__ == '__main__':
     a.join()
     b.join()
     c.join
-""""
+"""
 
 pushSensorReadings()
